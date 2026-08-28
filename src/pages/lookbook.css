@@ -1,0 +1,30 @@
+.lookbook { padding: 52px 0 96px; }
+
+.lb-head { max-width: 700px; margin-bottom: 38px; }
+.lb-title { font-size: clamp(32px, 4.4vw, 50px); font-weight: 300; margin: 12px 0 16px; }
+
+.lb-tabs {
+  display: flex; gap: 4px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--line); margin-bottom: 40px;
+}
+.lb-tab {
+  position: relative; padding: 12px 17px;
+  font-family: var(--serif); font-size: 15px; color: var(--ink-3);
+  transition: color .26s var(--ease);
+}
+.lb-tab::after {
+  content: ''; position: absolute; left: 17px; right: 17px; bottom: -1px;
+  height: 1.5px; background: var(--ink);
+  transform: scaleX(0); transition: transform .34s var(--ease);
+}
+.lb-tab:hover { color: var(--ink); }
+.lb-tab.active { color: var(--ink); }
+.lb-tab.active::after { transform: scaleX(1); }
+
+.lb-panel { animation: fade .45s var(--ease); }
+.lb-brief { margin-bottom: 30px; }
+.lb-brief h2 { font-size: clamp(26px, 3.2vw, 36px); font-weight: 300; margin-bottom: 10px; }
+
+.lb-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+
+@media (max-width: 900px) { .lb-grid { grid-template-columns: 1fr; } }

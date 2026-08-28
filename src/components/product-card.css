@@ -1,0 +1,62 @@
+.pcard { display: flex; flex-direction: column; }
+
+.pcard-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--paper-2);
+  border-radius: 2px;
+}
+.pcard-media img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1s var(--ease), filter .6s var(--ease);
+}
+.pcard:hover .pcard-media img { transform: scale(1.045); }
+
+.pcard-save {
+  position: absolute; top: 11px; right: 11px; z-index: 2;
+  width: 32px; height: 32px; display: grid; place-items: center;
+  background: rgba(251,249,245,.86);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  color: var(--ink-2);
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity .3s var(--ease), transform .3s var(--ease), color .25s var(--ease);
+}
+.pcard:hover .pcard-save, .pcard-save.on, .pcard-save:focus-visible { opacity: 1; transform: none; }
+.pcard-save:hover { color: var(--clay); }
+.pcard-save.on { color: var(--clay); }
+
+.pcard-quick {
+  position: absolute; inset-inline: 10px; bottom: 10px; z-index: 2;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .34s var(--ease), transform .34s var(--ease);
+}
+.pcard:hover .pcard-quick, .pcard:focus-within .pcard-quick { opacity: 1; transform: none; }
+
+.pcard-body { padding-top: 14px; display: flex; flex-direction: column; gap: 3px; }
+
+.pcard-brand {
+  margin: 0;
+  font-size: 10px; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.pcard-name {
+  font-family: var(--serif); font-size: 16.5px; font-weight: 400;
+  letter-spacing: -.012em; line-height: 1.28;
+}
+.pcard-name a { transition: color .25s var(--ease); }
+.pcard-name a:hover { color: var(--clay); }
+
+.pcard-foot {
+  margin-top: 5px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 13.5px;
+}
+.pcard-color { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-3); }
+.pcard-color i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,.12); display: block; }
+
+@media (hover: none) {
+  .pcard-save, .pcard-quick { opacity: 1; transform: none; }
+}

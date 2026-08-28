@@ -1,0 +1,89 @@
+# AIStylo — local stack.
+#
+#   docker compose up web                    storefront only
+#   docker compose --profile data up         + Postgres/pgvector + Redis
+#   docker compose --profile dev up          hot-reloading Vite instead of nginx
+#
+# Phase 1 needs nothing but `web`. The data services are here so the Phase 2
+# backend (see ROADMAP.md) has somewhere to connect the moment it exists.
+
+name: aistylo
+
+services:
+  # ── Storefront ────────────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      target: runtime
+      args:
+        VITE_STYLIST_API: ${VITE_STYLIST_API:-}
+        VITE_STYLIST_API_KEY: ${VITE_STYLIST_API_KEY:-}
+    image: aistylo/web:latest
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ── Hot-reload dev server (profile: dev) ──────────────────────────────
+  dev:
+    profiles: ["dev"]
+    image: node:20-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "${DEV_PORT:-5173}:5173"
+    volumes:
+      - .:/app
+      # Keep the container's node_modules out of the bind mount so Linux
+      # binaries are not clobbered by the host's.
+      - aistylo_node_modules:/app/node_modules
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+
+  # ── Postgres + pgvector (profile: data) ───────────────────────────────
+  db:
+    profiles: ["data"]
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-aistylo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aistylo_dev_only}
+      POSTGRES_DB: ${POSTGRES_DB:-aistylo}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - aistylo_pgdata:/var/lib/postgresql/data
+      # Anything in here runs once, on an empty data directory.
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aistylo} -d ${POSTGRES_DB:-aistylo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ── Redis: sessions, carts, rate limiting (profile: data) ─────────────
+  cache:
+    profiles: ["data"]
+    image: redis:7-alpine
+    command: redis-server --save 60 1 --loglevel warning
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - aistylo_redis:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  aistylo_pgdata:
+  aistylo_redis:
+  aistylo_node_modules:
