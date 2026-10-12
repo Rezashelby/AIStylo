@@ -1,29 +1,55 @@
 # AIStylo — local stack.
 #
-#   docker compose up web                    storefront only
-#   docker compose --profile data up         + Postgres/pgvector + Redis
-#   docker compose --profile dev up          hot-reloading Vite instead of nginx
+#   docker compose up app                     the app, standalone, on :3000
+#   docker compose --profile edge up          + nginx reverse proxy on :8080
+#   docker compose --profile data up          + Postgres/pgvector + Redis
+#   docker compose --profile dev up           hot-reloading Vite on :5173
 #
-# Phase 1 needs nothing but `web`. The data services are here so the Phase 2
-# backend (see ROADMAP.md) has somewhere to connect the moment it exists.
+# `app` is self-contained: it builds and serves the SPA over Node and needs
+# no other service. Everything below it is additive.
 
 name: aistylo
 
 services:
-  # ── Storefront ────────────────────────────────────────────────────────
-  web:
+  # ── Application ───────────────────────────────────────────────────────
+  # Runs on its own. `docker run -p 3000:3000 aistylo/app` works with no
+  # compose file at all.
+  app:
     build:
       context: .
       target: runtime
       args:
         VITE_STYLIST_API: ${VITE_STYLIST_API:-}
         VITE_STYLIST_API_KEY: ${VITE_STYLIST_API_KEY:-}
-    image: aistylo/web:latest
+    image: aistylo/app:latest
+    environment:
+      PORT: 3000
     ports:
-      - "${WEB_PORT:-8080}:80"
+      - "${APP_PORT:-3000}:3000"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost/healthz"]
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ── Edge proxy (profile: edge) ────────────────────────────────────────
+  # TLS termination, rate limiting, and /api routing once a backend exists.
+  # Optional: the app serves fine without it.
+  proxy:
+    profiles: ["edge"]
+    image: nginx:1.27-alpine
+    ports:
+      - "${PROXY_PORT:-8080}:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/healthz || exit 1"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -32,16 +58,19 @@ services:
   # ── Hot-reload dev server (profile: dev) ──────────────────────────────
   dev:
     profiles: ["dev"]
-    image: node:20-alpine
-    working_dir: /app
-    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    # Dependencies are installed at build time (Dockerfile `dev` stage).
+    # After changing package.json: docker compose --profile dev up --build -V
+    build:
+      context: .
+      target: dev
+    image: aistylo/dev:latest
     ports:
       - "${DEV_PORT:-5173}:5173"
     volumes:
       - .:/app
-      # Keep the container's node_modules out of the bind mount so Linux
-      # binaries are not clobbered by the host's.
-      - aistylo_node_modules:/app/node_modules
+      # Anonymous volume: stops the bind mount above from hiding the
+      # image's node_modules. Nothing is installed at container start.
+      - /app/node_modules
     environment:
       CHOKIDAR_USEPOLLING: "true"
 
@@ -86,4 +115,3 @@ services:
 volumes:
   aistylo_pgdata:
   aistylo_redis:
-  aistylo_node_modules:

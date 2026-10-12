@@ -9,7 +9,7 @@
   --a-ink:   #1C1A17;
   --a-ink2:  #5C564D;
   --a-ink3:  #8D8579;
-  --a-accent:#9A5B43;
+  --a-accent:#7A1F2B;
   --a-good:  #4F7A52;
   --a-warn:  #B8842F;
   --a-bad:   #A9503F;
@@ -33,7 +33,7 @@
 
 .admin-brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
 .admin-brand > span { display: flex; flex-direction: column; line-height: 1.15; }
-.admin-brand strong { font-family: var(--serif); font-size: 17px; font-weight: 400; }
+.admin-brand strong { font-family: var(--serif); font-size: 20px; font-weight: 400; }
 .admin-brand em {
   font-style: normal; font-size: 9.5px; letter-spacing: .16em;
   text-transform: uppercase; color: var(--a-ink3);
@@ -140,7 +140,7 @@
   border: 1px solid var(--a-line); border-radius: 4px; font-size: 13px;
   transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
 }
-.afield:focus { outline: none; border-color: var(--a-accent); box-shadow: 0 0 0 3px rgba(154,91,67,.09); }
+.afield:focus { outline: none; border-color: var(--a-accent); box-shadow: 0 0 0 3px rgba(122,31,43,.09); }
 
 .abtn {
   display: inline-flex; align-items: center; gap: 7px;
@@ -225,7 +225,7 @@
 
 .drawer-scrim {
   position: fixed; inset: 0; z-index: 80;
-  background: rgba(28,26,23,.32);
+  background: rgba(20,18,16,.32);
   backdrop-filter: blur(2px);
   display: flex; justify-content: flex-end;
   animation: fade .2s var(--ease);

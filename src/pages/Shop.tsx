@@ -27,6 +27,8 @@ export default function Shop() {
   const brand = params.get('brand') ?? 'all'
   const [sort, setSort] = useState<Sort>('featured')
   const [maxPrice, setMaxPrice] = useState(1000)
+  // Small screens only: filters stay folded until asked for.
+  const [showFilters, setShowFilters] = useState(false)
 
   const set = (k: string, v: string) => {
     const next = new URLSearchParams(params)
@@ -58,8 +60,8 @@ export default function Shop() {
         <p className="eyebrow">The collection</p>
         <h1 className="shop-title">Considered pieces, built to combine.</h1>
         <p className="lede">
-          Every item is tagged for occasion, formality and season — which is how
-          the stylist knows what belongs together.
+          Pieces chosen to work together — which is why the stylist can build
+          whole outfits from them.
         </p>
       </header>
 
@@ -75,7 +77,17 @@ export default function Shop() {
         ))}
       </nav>
 
-      <div className="shop-bar">
+      <button
+        className="filters-toggle"
+        onClick={() => setShowFilters((v) => !v)}
+        aria-expanded={showFilters}
+        aria-controls="shop-bar"
+      >
+        Filter &amp; sort{filtered ? ' · on' : ''}
+        <span aria-hidden>{showFilters ? '−' : '+'}</span>
+      </button>
+
+      <div id="shop-bar" className={`shop-bar ${showFilters ? 'open' : ''}`}>
         <div className="shop-filters">
           <label className="ctl">
             <span>Occasion</span>

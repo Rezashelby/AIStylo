@@ -65,6 +65,7 @@ export function parseIntent(raw: string): StyleIntent {
   for (const [re, level] of FORMALITY_CUES) {
     if (re.test(text)) { formality = level; break }
   }
+  const formalityStated = formality !== undefined
   // Occasion implies a formality floor when the user did not state one.
   if (!formality && occasion) {
     formality = ({ formal: 5, work: 4, evening: 4, travel: 2, weekend: 2, active: 1 } as const)[occasion]
@@ -82,7 +83,10 @@ export function parseIntent(raw: string): StyleIntent {
     .split(/\s+/)
     .filter((w) => w.length > 2 && !STOPWORDS.has(w))
 
-  return { occasion, season, formality, colors: colors.length ? colors : undefined, keywords, budget }
+  return {
+    occasion, season, formality, formalityStated,
+    colors: colors.length ? colors : undefined, keywords, budget,
+  }
 }
 
 /** Current season, used as a fallback when the request does not name one. */

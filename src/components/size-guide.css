@@ -1,0 +1,51 @@
+.sg {
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  padding: 0; border: none; border-radius: 14px;
+  background: var(--white); color: var(--ink);
+  box-shadow: var(--shadow-lg);
+}
+.sg::backdrop { background: rgba(20,18,16,.42); backdrop-filter: blur(3px); }
+.sg[open] { animation: rise .3s var(--ease); }
+
+.sg-inner { padding: 24px 26px 22px; }
+.sg-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.sg-head h2 { font-size: 30px; }
+.sg-close {
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border-radius: 50%; font-size: 24px; line-height: 1; color: var(--ink-2);
+  transition: background .2s var(--ease);
+}
+.sg-close:hover { background: var(--paper-2); }
+
+.sg-lede { margin: 0 0 18px; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+
+.sg-table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+.sg-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 11px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3);
+  border-bottom: 1px solid var(--line);
+}
+.sg-table td { padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.sg-table tr.mine td { background: var(--rose-tint); font-weight: 500; }
+.sg-you {
+  margin-left: 10px; padding: 2px 8px; border-radius: 100px;
+  background: var(--accent); color: var(--paper);
+  font-size: 10.5px; font-weight: 500; letter-spacing: .02em;
+}
+
+.sg-how { margin-top: 20px; padding: 14px 16px; background: var(--paper-2); border-radius: 10px; }
+.sg-how h3 { font-size: 19px; margin-bottom: 6px; }
+.sg-how p { margin: 6px 0 0; font-size: 13.5px; line-height: 1.55; color: var(--ink-2); }
+
+.sg-fine { margin: 16px 0 0; font-size: 12.5px; color: var(--ink-3); }
+
+@media (max-width: 560px) {
+  /* A bottom sheet on phones: thumb-reachable, and feels native. */
+  .sg {
+    width: 100vw; max-width: 100vw; margin: auto 0 0;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sg-inner { padding: 20px 20px 18px; }
+}

@@ -1,3 +1,16 @@
+# ─────────────────────────────────────────────────────────────────────────
+# AIStylo app — self-contained.
+#
+# Builds the SPA and serves it over Node. No nginx here: this image runs on
+# its own with nothing else present.
+#
+#   docker build -t aistylo/app .
+#   docker run -p 3000:3000 aistylo/app     → http://localhost:3000
+#
+# The nginx reverse proxy in docker-compose.yml is optional and sits in
+# front of this; it is not required for the app to run.
+# ─────────────────────────────────────────────────────────────────────────
+
 # ── Build ────────────────────────────────────────────────────────────────
 FROM node:20-alpine AS build
 WORKDIR /app
@@ -17,19 +30,34 @@ ENV VITE_STYLIST_API=$VITE_STYLIST_API \
 
 RUN npm run build
 
-# ── Serve ────────────────────────────────────────────────────────────────
-FROM nginx:1.27-alpine AS runtime
+# ── Dev (docker compose --profile dev) ───────────────────────────────────
+# Dependencies are baked into the image; source is bind-mounted at runtime.
+FROM node:20-alpine AS dev
+WORKDIR /app
+COPY package.json package-lock.json* ./
+RUN npm ci
+EXPOSE 5173
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
 
-RUN apk add --no-cache curl
+# ── Runtime ──────────────────────────────────────────────────────────────
+FROM node:20-alpine AS runtime
+WORKDIR /app
 
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV=production \
+    PORT=3000
 
-# nginx's own user already exists in the base image; drop root for the workers.
-RUN chown -R nginx:nginx /usr/share/nginx/html
+# Only the static server's own source and the built bundle ship here — no
+# node_modules, no build toolchain, no shell utilities beyond the base image.
+COPY --from=build /app/dist ./dist
+COPY docker/server.mjs ./server.mjs
 
-EXPOSE 80
+# `node` (uid 1000) ships with the base image. Drop root.
+USER node
+
+EXPOSE 3000
+
+# Node's own fetch, so the image needs no curl or wget.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -fsS http://localhost/healthz || exit 1
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "server.mjs"]

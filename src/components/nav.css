@@ -1,12 +1,12 @@
 .nav {
   position: sticky; top: 0; z-index: 60;
-  background: rgba(251,249,245,.72);
+  background: rgba(239,238,234,.72);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
   border-bottom: 1px solid transparent;
   transition: border-color .4s var(--ease), background .4s var(--ease);
 }
-.nav.is-scrolled { border-bottom-color: var(--line); background: rgba(251,249,245,.9); }
+.nav.is-scrolled { border-bottom-color: var(--line); background: rgba(239,238,234,.9); }
 
 .nav-inner {
   height: var(--nav-h);
@@ -20,20 +20,19 @@
 .brand-mark {
   width: 30px; height: 30px; display: grid; place-items: center;
   background: var(--ink); color: var(--paper);
-  font-family: var(--serif); font-size: 16px; line-height: 1;
+  font-family: var(--serif); font-size: 18px; line-height: 1;
   border-radius: 50%;
   transition: background .35s var(--ease);
 }
-.brand:hover .brand-mark { background: var(--clay); }
+.brand:hover .brand-mark { background: var(--accent); }
 .brand-word {
-  font-family: var(--serif); font-size: 19px; letter-spacing: -.02em;
+  font-family: var(--serif); font-size: 23px; letter-spacing: -.01em;
 }
 
-.nav-links { display: flex; gap: 34px; justify-self: center; }
+.nav-links { display: flex; gap: 38px; justify-self: center; }
 .nav-link {
   position: relative;
-  font-size: 12.5px; letter-spacing: .09em; text-transform: uppercase;
-  color: var(--ink-2); padding: 6px 0;
+  font-size: 14px; color: var(--ink-2); padding: 6px 0;
   transition: color .28s var(--ease);
 }
 .nav-link::after {
@@ -46,50 +45,95 @@
 .nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
 .nav-link.active { color: var(--ink); }
 
-.nav-actions { display: flex; align-items: center; gap: 14px; justify-self: end; }
+.nav-actions { display: flex; align-items: center; gap: 6px; justify-self: end; }
 
+/* The one primary action in the header. */
 .nav-cta {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 17px;
-  border: 1px solid var(--line-2); border-radius: 100px;
-  font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase;
-  color: var(--ink-2);
-  transition: all .32s var(--ease);
+  margin-right: 8px;
+  padding: 10px 18px;
+  background: var(--ink); color: var(--paper);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 500;
+  transition: background .32s var(--ease), transform .2s var(--ease);
 }
-.nav-cta:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-.nav-cta svg { color: var(--clay); transition: color .32s var(--ease); }
-.nav-cta:hover svg { color: var(--clay-soft); }
+.nav-cta:hover { background: var(--accent); }
+.nav-cta:active { transform: scale(.98); }
+.nav-cta svg { color: var(--accent-soft); transition: color .32s var(--ease); }
+.nav-cta:hover svg, .nav-cta.active svg { color: var(--paper); }
+.nav-cta.active { background: var(--accent); }
 
-.nav-cart { position: relative; display: grid; place-items: center; width: 38px; height: 38px; color: var(--ink-2); transition: color .28s var(--ease); }
-.nav-cart:hover { color: var(--ink); }
+.nav-icon {
+  position: relative; display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  color: var(--ink-2);
+  transition: color .28s var(--ease), background .28s var(--ease);
+}
+.nav-icon:hover { color: var(--ink); background: var(--paper-2); }
+.nav-icon.active { color: var(--ink); background: var(--paper-2); }
+
 .cart-dot {
-  position: absolute; top: 3px; right: 2px;
+  position: absolute; top: 4px; right: 3px;
   min-width: 16px; height: 16px; padding: 0 4px;
   display: grid; place-items: center;
-  background: var(--clay); color: var(--paper);
+  background: var(--accent); color: var(--paper);
   font-size: 9.5px; font-weight: 600; border-radius: 100px;
   font-variant-numeric: tabular-nums;
+  animation: bump .45s var(--ease);
 }
+@keyframes bump { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: none; } }
 
-.nav-burger { display: none; width: 34px; height: 34px; flex-direction: column; gap: 5px; align-items: center; justify-content: center; }
-.nav-burger span { width: 17px; height: 1.4px; background: var(--ink); display: block; }
-
-.nav-drawer { display: none; }
-
-@media (max-width: 900px) {
-  .nav-links, .nav-cta span { display: none; }
-  .nav-cta { padding: 9px; border-radius: 50%; }
+.nav-avatar {
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--accent); color: var(--paper);
+  font-size: 12.5px; font-weight: 600;
 }
-@media (max-width: 620px) {
-  .nav-inner { grid-template-columns: auto 1fr; }
-  .nav-burger { display: flex; }
-  .nav-drawer {
-    display: flex; flex-direction: column;
-    border-top: 1px solid var(--line); background: var(--paper);
-    animation: fade .25s var(--ease);
+.nav-avatar.small { width: 22px; height: 22px; font-size: 11px; }
+
+.nav-signin {
+  padding: 8px 12px; border-radius: 100px;
+  font-size: 13.5px; color: var(--ink-2);
+  transition: color .25s var(--ease), background .25s var(--ease);
+}
+.nav-signin:hover, .nav-signin.active { color: var(--ink); background: var(--paper-2); }
+
+/* ── Bottom tab bar (small screens) ──────────────────────────────────── */
+
+.tabbar { display: none; }
+
+@media (max-width: 760px) {
+  .nav-inner { grid-template-columns: 1fr auto; }
+  .nav-links, .nav-cta, .nav-profile, .nav-signin { display: none; }
+
+  .tabbar {
+    position: fixed; inset-inline: 0; bottom: 0; z-index: 70;
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    background: rgba(239,238,234,.86);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    border-top: 1px solid var(--line);
   }
-  .drawer-link {
-    padding: 15px 20px; border-bottom: 1px solid var(--line);
-    font-size: 13px; letter-spacing: .07em; text-transform: uppercase;
+  .tab {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 0;
+    color: var(--ink-3);
+    -webkit-tap-highlight-color: transparent;
+    transition: color .25s var(--ease);
   }
+  .tab-icon { display: grid; place-items: center; height: 24px; }
+  .tab-label { font-size: 10.5px; letter-spacing: .02em; }
+  .tab.active { color: var(--ink); }
+  .tab.active .tab-label { font-weight: 500; }
+
+  /* The stylist tab is the product: give it the accent, always. */
+  .tab.primary .tab-icon {
+    width: 46px; height: 24px; border-radius: 100px;
+    background: var(--ink); color: var(--paper);
+    transition: background .25s var(--ease);
+  }
+  .tab.primary.active .tab-icon { background: var(--accent); }
+
+  /* Keep the page, footer included, clear of the bar. */
+  .app:has(.tabbar) { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
 }

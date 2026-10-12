@@ -1,8 +1,14 @@
-.stylist { background: var(--paper-2); border-bottom: 1px solid var(--line); }
+/* Layered, not flat: a soft rose bloom behind the conversation. */
+.stylist {
+  background:
+    radial-gradient(60% 50% at 100% 0%, rgba(201,164,160,.28), transparent 70%),
+    linear-gradient(180deg, var(--paper-2), var(--paper));
+  border-bottom: 1px solid var(--line);
+}
 .stylist-inner {
   min-height: calc(100vh - var(--nav-h));
   display: flex; flex-direction: column;
-  padding: 34px 0 26px;
+  padding-block: 34px 26px;
 }
 
 .stylist-head {
@@ -28,7 +34,7 @@
 .starter-mark {
   width: 58px; height: 58px; display: grid; place-items: center;
   background: var(--white); border: 1px solid var(--line);
-  border-radius: 50%; color: var(--clay); margin-bottom: 4px;
+  border-radius: 50%; color: var(--accent); margin-bottom: 4px;
 }
 .starter h2 { font-size: 30px; font-weight: 300; }
 .starter .lede { text-align: center; font-size: 15.5px; }
@@ -43,7 +49,7 @@
   transition: all .3s var(--ease);
 }
 .starter-chip:hover {
-  border-color: var(--clay); color: var(--ink);
+  border-color: var(--accent); color: var(--ink);
   transform: translateY(-1px); box-shadow: var(--shadow-sm);
 }
 
@@ -58,20 +64,21 @@
 }
 .turn.user p { margin: 0; font-size: 14.5px; line-height: 1.55; }
 
-.turn.bot { max-width: 100%; }
+.turn.bot { max-width: 100%; min-width: 0; }
+.turn.bot .pq { margin-top: 22px; }
 .bot-reply {
   margin: 0 0 20px;
-  font-family: var(--serif); font-size: 19px; line-height: 1.5;
+  font-family: var(--serif); font-size: 22px; line-height: 1.5;
   font-weight: 300; color: var(--ink); max-width: 66ch;
 }
 
-.looks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.looks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 
 /* ── Thinking ────────────────────────────────────────────────────────── */
 
 .thinking { display: flex; align-items: center; gap: 6px; padding: 8px 0; }
 .thinking span {
-  width: 6px; height: 6px; border-radius: 50%; background: var(--clay);
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
   animation: pulse 1.25s var(--ease) infinite;
 }
 .thinking span:nth-child(2) { animation-delay: .16s; }
@@ -96,9 +103,70 @@
 
 .composer-note { font-size: 11px; margin: 9px 0 0; text-align: center; }
 
-@media (max-width: 900px) { .looks { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .looks { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 560px) {
   .starter-grid { grid-template-columns: 1fr; }
   .composer { flex-direction: column; }
   .bot-reply { font-size: 17px; }
 }
+
+/* ── Profile chip & confidence note ──────────────────────────────────── */
+
+.stylist-head-right { display: flex; align-items: center; gap: 16px; }
+
+.profile-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 14px 7px 10px;
+  background: var(--white);
+  border: 1px solid var(--line); border-radius: 100px;
+  font-size: 11.5px; color: var(--ink-2);
+  transition: all .28s var(--ease);
+  white-space: nowrap;
+}
+.profile-chip:hover { border-color: var(--accent); color: var(--ink); }
+
+.profile-ring {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: conic-gradient(var(--accent) var(--pct), var(--line) 0);
+  flex-shrink: 0;
+  position: relative;
+}
+.profile-ring::after {
+  content: ''; position: absolute; inset: 3.5px;
+  background: var(--white); border-radius: 50%;
+}
+
+.bot-note {
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  background: var(--rose-tint);
+  border-radius: 6px;
+  font-size: 12.5px; line-height: 1.55; color: var(--ink-2);
+  max-width: 620px;
+}
+
+@media (max-width: 560px) {
+  .stylist-head-right { flex-direction: column; align-items: flex-end; gap: 8px; }
+}
+
+/* ── Weather opt-in ──────────────────────────────────────────────────── */
+
+.context-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding-top: 14px; border-top: 1px solid var(--line);
+}
+.context-row + .composer { border-top: none; padding-top: 10px; }
+
+.weather-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 13px;
+  border: 1px solid var(--line); border-radius: 100px;
+  background: var(--white);
+  font-size: 11.5px; color: var(--ink-2);
+  transition: all .25s var(--ease);
+}
+.weather-chip:hover { border-color: var(--accent); color: var(--ink); }
+.weather-chip.on { border-color: var(--accent); color: var(--accent); background: rgba(122,31,43,.06); }
+.weather-chip:disabled { opacity: .6; cursor: progress; }
+.weather-x { font-size: 14px; line-height: 1; margin-left: 2px; }
+.weather-err { font-size: 11.5px; color: var(--ink-3); }

@@ -11,6 +11,9 @@ const COLUMNS = [
   { title: 'Discover', links: [
     { to: '/stylist', label: 'The stylist' },
     { to: '/lookbook', label: 'Lookbook' },
+    { to: '/lookbook?tab=saved', label: 'Saved' },
+    { to: '/shuffle', label: 'Style Shuffle' },
+    { to: '/profile', label: 'Style profile' },
   ]},
   { title: 'Care', links: [
     { to: '/shop', label: 'Shipping' },

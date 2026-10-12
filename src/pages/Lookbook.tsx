@@ -1,6 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import OutfitCard from '@/components/OutfitCard'
+import ProductCard from '@/components/ProductCard'
+import { byId } from '@/data/catalog'
 import { styleRequest } from '@/lib/stylist'
+import { useProfile, useShop } from '@/store'
 import type { Occasion } from '@/types'
 import './lookbook.css'
 
@@ -17,10 +21,30 @@ const EDITS: { occasion: Occasion; title: string; brief: string; query: string }
     query: 'formal wedding guest outfit, elevated and elegant' },
 ]
 
+/** Tab index for the shopper's own saved looks; the edits are 0..n. */
+const SAVED = -1
+
 export default function Lookbook() {
-  const [active, setActive] = useState(0)
-  const edit = EDITS[active]
-  const looks = useMemo(() => styleRequest(edit.query, 4).outfits, [edit.query])
+  const savedLooks = useShop((s) => s.savedLooks)
+  const savedIds = useShop((s) => s.saved)
+  // Newest first; ids for products no longer in the catalogue drop out.
+  const savedPieces = [...savedIds].reverse().flatMap((id) => byId(id) ?? [])
+  const savedCount = savedLooks.length + savedPieces.length
+  const profile = useProfile((s) => s.profile)
+  const [params] = useSearchParams()
+  // `?tab=saved` opens Saved directly, so other pages can link to it.
+  const wantsSaved = params.get('tab') === 'saved'
+  const [active, setActive] = useState(wantsSaved ? SAVED : 0)
+  // Following a Saved link while already on this page.
+  useEffect(() => { if (wantsSaved) setActive(SAVED) }, [wantsSaved])
+  const [note, setNote] = useState<string | null>(null)
+  const showSaved = active === SAVED
+  const edit = EDITS[showSaved ? 0 : active]
+  // Edits are styled for this shopper too, so ratings and feedback show here.
+  const looks = useMemo(
+    () => styleRequest(edit.query, 4, profile).outfits,
+    [edit.query, profile],
+  )
 
   return (
     <div className="wrap lookbook">
@@ -38,23 +62,68 @@ export default function Lookbook() {
           <button
             key={e.title}
             className={`lb-tab ${i === active ? 'active' : ''}`}
-            onClick={() => setActive(i)}
+            onClick={() => { setActive(i); setNote(null) }}
             aria-current={i === active}
           >
             {e.title}
           </button>
         ))}
+        <button
+          className={`lb-tab ${showSaved ? 'active' : ''}`}
+          onClick={() => { setActive(SAVED); setNote(null) }}
+          aria-current={showSaved}
+        >
+          Saved{savedCount ? ` (${savedCount})` : ''}
+        </button>
       </nav>
 
-      <section className="lb-panel" key={edit.title}>
-        <header className="lb-brief">
-          <h2>{edit.title}</h2>
-          <p className="lede">{edit.brief}</p>
-        </header>
-        <div className="lb-grid">
-          {looks.map((o, i) => <OutfitCard key={o.id} o={o} index={i} />)}
-        </div>
-      </section>
+      {showSaved ? (
+        <section className="lb-panel" key="saved">
+          <header className="lb-brief">
+            <h2>Saved</h2>
+            <p className="lede">
+              Looks and pieces you kept — tap the heart on anything to add it here.
+            </p>
+          </header>
+          {savedCount ? (
+            <>
+              {!!savedLooks.length && (
+                <div className="lb-saved-group">
+                  <h3>Looks <span>{savedLooks.length}</span></h3>
+                  <div className="lb-grid">
+                    {savedLooks.map((o, i) => <OutfitCard key={o.id} o={o} index={i} />)}
+                  </div>
+                </div>
+              )}
+              {!!savedPieces.length && (
+                <div className="lb-saved-group">
+                  <h3>Pieces <span>{savedPieces.length}</span></h3>
+                  <div className="lb-pieces">
+                    {savedPieces.map((p, i) => <ProductCard key={p.id} p={p} index={i} />)}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="lb-empty">
+              <p>Nothing saved yet. Tap the heart on any look or piece to keep it here.</p>
+              <Link to="/stylist" className="btn ghost small">Ask the stylist</Link>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className="lb-panel" key={edit.title}>
+          <header className="lb-brief">
+            <h2>{edit.title}</h2>
+            <p className="lede">{edit.brief}</p>
+          </header>
+          {/* Feedback restyles the edit at once; say what changed above it. */}
+          {note && <p className="lb-note" role="status">{note} The edit has been restyled.</p>}
+          <div className="lb-grid">
+            {looks.map((o, i) => <OutfitCard key={o.id} o={o} index={i} onFeedback={setNote} />)}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

@@ -1,0 +1,46 @@
+.order { padding-block: 40px 96px; max-width: 980px; }
+
+.order-hero { text-align: center; margin: 12px auto 40px; max-width: 620px; }
+.order-check {
+  width: 56px; height: 56px; margin: 0 auto 18px; display: grid; place-items: center;
+  border-radius: 50%; background: var(--ink); color: var(--paper);
+  animation: rise .5s var(--ease);
+}
+.order-hero h1 { font-size: clamp(38px, 4.6vw, 56px); margin-bottom: 12px; }
+.order-hero .lede { margin-inline: auto; }
+.order-hero strong { font-weight: 600; letter-spacing: .03em; }
+.order-demo {
+  display: inline-block; margin: 16px 0 0; padding: 8px 14px;
+  background: var(--rose-tint); border-radius: 100px; font-size: 13px; color: var(--ink-2);
+}
+
+.order-head { margin-bottom: 28px; }
+.order-head .co-back { font-size: 13px; color: var(--ink-3); }
+.order-head h1 { font-size: clamp(32px, 3.6vw, 46px); margin: 10px 0 6px; }
+
+.order-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.order-box { padding: 22px 24px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; }
+.order-box h2 { font-size: 24px; margin-bottom: 14px; }
+.order-h-gap { margin-top: 24px; }
+
+.order-lines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.order-lines li { display: flex; align-items: center; gap: 14px; font-size: 14px; }
+.order-thumb { width: 56px; flex-shrink: 0; aspect-ratio: 3 / 4; border-radius: 6px; overflow: hidden; background: var(--paper-2); }
+.order-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.order-line-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.order-line-text strong { font-weight: 500; }
+.order-line-text span { font-size: 12.5px; color: var(--ink-3); }
+
+.order-totals { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; }
+.order-totals div { display: flex; justify-content: space-between; font-size: 14px; }
+.order-totals dd { margin: 0; font-variant-numeric: tabular-nums; }
+.order-totals .total { padding-top: 10px; border-top: 1px solid var(--line); font-size: 16px; font-weight: 500; }
+
+.order-addr { margin: 0 0 8px; line-height: 1.6; }
+
+.order-next { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
+
+@media (max-width: 760px) {
+  .order-grid { grid-template-columns: minmax(0, 1fr); }
+  .order-box { padding: 18px; }
+}

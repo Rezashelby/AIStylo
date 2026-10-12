@@ -1,0 +1,101 @@
+.shuffle { padding-block: 52px 96px; }
+
+.sh-head { max-width: 680px; margin-bottom: 40px; }
+.sh-title { font-size: clamp(32px, 4.4vw, 50px); font-weight: 300; margin: 12px 0 16px; }
+
+.sh-body {
+  display: grid; grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 56px; align-items: start;
+}
+
+/* ── Stage ───────────────────────────────────────────────────────────── */
+
+.sh-stage { max-width: 640px; }
+
+.sh-progress { height: 2px; background: var(--line); margin-bottom: 22px; overflow: hidden; }
+.sh-progress span { display: block; height: 100%; background: var(--accent); transition: width .4s var(--ease); }
+
+.sh-deck { position: relative; min-height: 440px; }
+
+.sh-card {
+  display: grid; grid-template-columns: 1fr 1fr;
+  background: var(--white);
+  border: 1px solid var(--line); border-radius: 3px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+.sh-img { aspect-ratio: 3 / 4; background: var(--paper-2); }
+.sh-img img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+.sh-meta { padding: 28px 26px; display: flex; flex-direction: column; gap: 10px; }
+.sh-meta h2 { font-size: 26px; font-weight: 400; }
+.sh-desc { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.sh-facts {
+  margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 6px 14px;
+  font-size: 12px; color: var(--ink-3);
+}
+.sh-facts .price { color: var(--ink); }
+
+.sh-controls { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 24px; }
+.sh-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 26px; border-radius: 100px;
+  font-size: 14px; font-weight: 500;
+  border: 1px solid var(--line-2);
+  transition: all .26s var(--ease);
+}
+.sh-btn.pass { color: var(--ink-2); background: var(--white); }
+.sh-btn.pass:hover { border-color: var(--ink); color: var(--ink); }
+.sh-btn.love { color: var(--paper); background: var(--ink); border-color: var(--ink); }
+.sh-btn.love:hover { background: var(--accent); border-color: var(--accent); }
+.sh-btn:active { transform: translateY(1px); }
+
+.sh-undo { font-size: 12px; color: var(--ink-3); }
+.sh-undo:hover:not(:disabled) { color: var(--ink); }
+.sh-undo:disabled { opacity: .35; cursor: default; }
+
+.sh-hint { text-align: center; font-size: 11.5px; margin: 12px 0 0; }
+
+.sh-done {
+  padding: 56px 36px; text-align: center;
+  border: 1px dashed var(--line-2); border-radius: 3px;
+}
+.sh-done h2 { font-size: 30px; font-weight: 300; margin-bottom: 12px; }
+.sh-done .lede { margin-inline: auto; }
+.sh-done-actions { display: flex; justify-content: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+
+/* ── What the stylist learned ────────────────────────────────────────── */
+
+.sh-read {
+  position: sticky; top: calc(var(--nav-h) + 24px);
+  padding: 22px; background: var(--rose-tint);
+  border-left: 2px solid var(--rose); border-radius: 0 6px 6px 0;
+}
+.sh-read-group { margin-top: 16px; }
+.sh-read-group h3 { font-size: 16px; font-weight: 400; margin-bottom: 8px; }
+.sh-read ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sh-read li {
+  padding: 4px 11px; border-radius: 100px;
+  background: var(--white); border: 1px solid var(--line);
+  font-size: 12px; color: var(--ink-2); text-transform: capitalize;
+}
+.sh-read ul.neg li { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--line-2); }
+.sh-read-empty { margin: 12px 0 0; font-size: 13px; line-height: 1.6; color: var(--ink-3); }
+.sh-read-count { margin: 18px 0 0; font-size: 12px; color: var(--ink-3); }
+.sh-read-count strong { color: var(--ink); font-weight: 500; }
+.sh-reset { margin-top: 12px; font-size: 12px; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+.sh-reset:hover { color: var(--accent); }
+
+@media (max-width: 900px) {
+  .sh-body { grid-template-columns: 1fr; gap: 36px; }
+  .sh-read { position: static; }
+}
+@media (max-width: 560px) {
+  .sh-card { grid-template-columns: 1fr; }
+  .sh-img { aspect-ratio: 4 / 3; }
+  .sh-meta { padding: 20px; }
+  .sh-desc { display: none; }
+  .sh-btn { padding: 12px 20px; }
+}

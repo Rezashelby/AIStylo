@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import type { ChatMessage, Weather } from '@/types'
+import { Link, useSearchParams } from 'react-router-dom'
 import OutfitCard from '@/components/OutfitCard'
+import ProfileQuestions from '@/components/ProfileQuestions'
 import { stylist } from '@/lib/ai/provider'
-import { useChat } from '@/store'
+import { confidenceNote, nextQuestions } from '@/lib/profileGaps'
+import { completeness } from '@/lib/sizing'
+import { localWeather } from '@/lib/weather'
+import { useChat, useProfile } from '@/store'
 import './stylist.css'
 
 const STARTERS = [
@@ -19,9 +24,16 @@ const uid = () => Math.random().toString(36).slice(2, 10)
 export default function Stylist() {
   const [params, setParams] = useSearchParams()
   const { messages, busy, push, update, setBusy, reset } = useChat()
+  const profile = useProfile((s) => s.profile)
+  const skipped = useProfile((s) => s.skipped)
   const [input, setInput] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+  // Opt-in per visit; never stored.
+  const [weather, setWeather] = useState<Weather | null>(null)
+  const [weatherState, setWeatherState] = useState<'idle' | 'loading' | string>('idle')
+  const weatherRef = useRef<Weather | null>(null)
+  weatherRef.current = weather
 
   const send = useCallback(async (text: string) => {
     const query = text.trim()
@@ -43,8 +55,17 @@ export default function Stylist() {
         .filter((m) => !m.pending)
         .map((m) => ({ role: m.role, content: m.content }))
 
-      const res = await stylist.style({ query, history, count: 4, signal: ctrl.signal })
-      update(replyId, { content: res.reply, outfits: res.outfits, pending: false })
+      const res = await stylist.style({
+        query, history, count: 4, signal: ctrl.signal,
+        profile: useProfile.getState().profile,
+        weather: weatherRef.current ?? undefined,
+      })
+      update(replyId, {
+        content: res.reply,
+        outfits: res.outfits,
+        pending: false,
+        intent: res.intent,
+      })
     } catch (err) {
       if ((err as Error).name === 'AbortError') return
       update(replyId, {
@@ -55,6 +76,58 @@ export default function Stylist() {
       setBusy(false)
     }
   }, [busy, push, update, setBusy])
+
+  /**
+   * Restyle the last request now that the profile has changed. `lead` says
+   * what changed, and is shown ahead of the new reply.
+   */
+  const restyle = useCallback(async (botMessage: ChatMessage, lead?: string) => {
+    const msgs = useChat.getState().messages
+    const idx = msgs.findIndex((m) => m.id === botMessage.id)
+    const prompt = [...msgs.slice(0, idx)].reverse().find((m) => m.role === 'user')
+    if (!prompt || useChat.getState().busy) return
+
+    setBusy(true)
+    update(botMessage.id, { pending: true })
+    try {
+      const res = await stylist.style({
+        query: prompt.content,
+        count: 4,
+        profile: useProfile.getState().profile,
+        weather: weatherRef.current ?? undefined,
+      })
+      update(botMessage.id, {
+        content: lead ? `${lead} ${res.reply}` : res.reply,
+        outfits: res.outfits, intent: res.intent, pending: false,
+      })
+    } catch {
+      update(botMessage.id, { pending: false })
+    } finally {
+      setBusy(false)
+    }
+  }, [setBusy, update])
+
+  const toggleWeather = async () => {
+    let next: Weather | null = null
+    if (!weather) {
+      setWeatherState('loading')
+      try {
+        next = await localWeather()
+        setWeatherState('idle')
+      } catch (err) {
+        setWeatherState((err as Error).message || 'Could not read the weather.')
+        return
+      }
+    } else {
+      setWeatherState('idle')
+    }
+    weatherRef.current = next
+    setWeather(next)
+    // Show the effect on the looks already on screen, as profile answers do.
+    const last = [...useChat.getState().messages].reverse()
+      .find((m) => m.role === 'assistant' && !m.pending && m.outfits?.length)
+    if (last) restyle(last)
+  }
 
   // Accept a query handed over from the home page.
   useEffect(() => {
@@ -75,6 +148,9 @@ export default function Stylist() {
   useEffect(() => () => abortRef.current?.abort(), [])
 
   const empty = messages.length === 0
+  const lastBotId = [...messages].reverse().find((m) => m.role === 'assistant' && !m.pending)?.id
+  const note = confidenceNote(profile)
+  const filled = completeness(profile)
 
   return (
     <div className="stylist">
@@ -84,11 +160,19 @@ export default function Stylist() {
             <p className="eyebrow">The stylist</p>
             <h1 className="stylist-title">Describe the day. Get the look.</h1>
           </div>
-          {!empty && (
-            <button className="link-btn" onClick={() => { abortRef.current?.abort(); reset() }}>
-              New conversation
-            </button>
-          )}
+          <div className="stylist-head-right">
+            {filled > 0 && (
+              <Link to="/profile" className="profile-chip" title={`Style profile ${filled}% complete`}>
+                <span className="profile-ring" style={{ '--pct': `${filled}%` } as React.CSSProperties} />
+                Style profile · {filled}%
+              </Link>
+            )}
+            {!empty && (
+              <button className="link-btn" onClick={() => { abortRef.current?.abort(); reset() }}>
+                New conversation
+              </button>
+            )}
+          </div>
         </header>
 
         <div className="thread scroll-thin" ref={scrollRef}>
@@ -126,16 +210,59 @@ export default function Stylist() {
                   ) : (
                     <>
                       <p className="bot-reply">{m.content}</p>
+
+
                       {!!m.outfits?.length && (
                         <div className="looks">
-                          {m.outfits.map((o, i) => <OutfitCard key={o.id} o={o} index={i} />)}
+                          {m.outfits.map((o, i) => (
+                            <OutfitCard
+                              key={o.id} o={o} index={i}
+                              // Only the latest reply restyles; older turns are history.
+                              onFeedback={m.id === lastBotId ? (note) => restyle(m, note) : undefined}
+                            />
+                          ))}
                         </div>
+                      )}
+
+                      {/* Ask only under the most recent reply, so earlier turns
+                          do not accumulate stale question cards. */}
+                      {m.id === lastBotId && !!m.outfits?.length && (() => {
+                        const ask = nextQuestions(profile, m.intent).filter(
+                          (q) => !skipped.includes(q.id),
+                        )
+                        return ask.length ? (
+                          <ProfileQuestions questions={ask} onAnswered={() => restyle(m)} />
+                        ) : null
+                      })()}
+
+                      {m.id === lastBotId && !!m.outfits?.length && note && (
+                        <p className="bot-note">{note}</p>
                       )}
                     </>
                   )}
                 </div>
               ),
             )
+          )}
+        </div>
+
+        <div className="context-row">
+          <button
+            type="button"
+            className={`weather-chip ${weather ? 'on' : ''}`}
+            onClick={toggleWeather}
+            disabled={weatherState === 'loading'}
+            aria-pressed={Boolean(weather)}
+            title={weather ? 'Stop using local weather' : 'Uses your location once to read current conditions'}
+          >
+            <Cloud />
+            {weatherState === 'loading' ? 'Reading the sky…'
+              : weather ? `Dressing for ${weather.tempC}° · ${weather.summary}`
+              : 'Dress for my weather'}
+            {weather && <span aria-hidden className="weather-x">×</span>}
+          </button>
+          {weatherState !== 'idle' && weatherState !== 'loading' && (
+            <span className="weather-err" role="status">{weatherState}</span>
           )}
         </div>
 
@@ -158,5 +285,13 @@ export default function Stylist() {
         </p>
       </div>
     </div>
+  )
+}
+
+function Cloud() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
+      <path d="M7 18h10.5a3.5 3.5 0 0 0 .4-7A5.5 5.5 0 0 0 7.3 9.6 4.2 4.2 0 0 0 7 18Z" strokeLinejoin="round" />
+    </svg>
   )
 }

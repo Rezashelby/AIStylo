@@ -17,7 +17,7 @@
 .pcard-save {
   position: absolute; top: 11px; right: 11px; z-index: 2;
   width: 32px; height: 32px; display: grid; place-items: center;
-  background: rgba(251,249,245,.86);
+  background: rgba(239,238,234,.86);
   backdrop-filter: blur(6px);
   border-radius: 50%;
   color: var(--ink-2);
@@ -25,8 +25,8 @@
   transition: opacity .3s var(--ease), transform .3s var(--ease), color .25s var(--ease);
 }
 .pcard:hover .pcard-save, .pcard-save.on, .pcard-save:focus-visible { opacity: 1; transform: none; }
-.pcard-save:hover { color: var(--clay); }
-.pcard-save.on { color: var(--clay); }
+.pcard-save:hover { color: var(--accent); }
+.pcard-save.on { color: var(--accent); }
 
 .pcard-quick {
   position: absolute; inset-inline: 10px; bottom: 10px; z-index: 2;
@@ -43,11 +43,11 @@
   color: var(--ink-3);
 }
 .pcard-name {
-  font-family: var(--serif); font-size: 16.5px; font-weight: 400;
+  font-family: var(--serif); font-size: 19px; font-weight: 400;
   letter-spacing: -.012em; line-height: 1.28;
 }
 .pcard-name a { transition: color .25s var(--ease); }
-.pcard-name a:hover { color: var(--clay); }
+.pcard-name a:hover { color: var(--accent); }
 
 .pcard-foot {
   margin-top: 5px;
@@ -58,5 +58,8 @@
 .pcard-color i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(0,0,0,.12); display: block; }
 
 @media (hover: none) {
-  .pcard-save, .pcard-quick { opacity: 1; transform: none; }
+  /* No hover to reveal it, and no size choice in a card: on touch screens the
+     card opens the product page instead of adding from the grid. */
+  .pcard-save { opacity: 1; transform: none; }
+  .pcard-quick { display: none; }
 }

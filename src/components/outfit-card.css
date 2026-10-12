@@ -9,13 +9,25 @@
 .ocard:hover { border-color: var(--line-2); box-shadow: var(--shadow); }
 
 .ocard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.ocard-title { font-size: 23px; margin-top: 5px; }
+.ocard-title { font-size: 27px; margin-top: 5px; }
 
-.ocard-match { position: relative; display: grid; place-items: center; flex-shrink: 0; }
-.ocard-match svg { display: block; }
-.ocard-match span {
-  position: absolute; font-size: 11.5px; font-weight: 600;
-  font-variant-numeric: tabular-nums; color: var(--ink);
+.ocard-head-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.ocard-save {
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%;
+  color: var(--ink-3);
+  transition: color .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
+}
+.ocard-save:hover { color: var(--accent); border-color: var(--accent); }
+.ocard-save.on { color: var(--accent); border-color: var(--accent); background: rgba(122,31,43,.07); }
+.ocard-save.on path { fill: currentColor; }
+
+.ocard-match {
+  padding: 6px 11px; border-radius: 100px;
+  background: var(--paper-2);
+  font-size: 11.5px; font-weight: 500; color: var(--ink-2);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 
 .ocard-rail {
@@ -27,7 +39,8 @@
   padding-bottom: 4px;
 }
 
-.ocard-item { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ocard-item { position: relative; min-width: 0; }
+.ocard-link { display: flex; flex-direction: column; gap: 2px; }
 .ocard-thumb {
   aspect-ratio: 3 / 4; overflow: hidden; border-radius: 2px;
   background: var(--paper-2); margin-bottom: 8px;
@@ -41,12 +54,12 @@
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   transition: color .25s var(--ease);
 }
-.ocard-item:hover .ocard-item-name { color: var(--clay); }
+.ocard-item:hover .ocard-item-name { color: var(--accent); }
 .ocard-item-price { margin: 2px 0 0; font-size: 12px; color: var(--ink-2); }
 
 .ocard-why {
-  background: var(--paper-2);
-  border-left: 2px solid var(--clay);
+  background: var(--rose-tint);
+  border-left: 2px solid var(--rose);
   padding: 14px 16px;
   border-radius: 0 2px 2px 0;
 }
@@ -59,4 +72,71 @@
 @media (max-width: 560px) {
   .ocard { padding: 17px; }
   .ocard-rail { grid-auto-columns: minmax(96px, 1fr); }
+}
+
+/* ── Size badge ──────────────────────────────────────────────────────── */
+
+.ocard-thumb { position: relative; }
+
+.ocard-size {
+  position: absolute; left: 6px; bottom: 6px;
+  padding: 2px 7px;
+  background: rgba(20,18,16,.88);
+  backdrop-filter: blur(4px);
+  color: var(--paper);
+  font-size: 10px; font-weight: 500; letter-spacing: .04em;
+  border-radius: 2px;
+}
+/* A size estimated from height and weight is marked as provisional rather
+   than presented with the same certainty as a real measurement. */
+.ocard-size.low { background: rgba(20,18,16,.62); }
+.ocard-size.low::after { content: '?'; margin-left: 1px; opacity: .8; }
+
+/* ── Swap a piece ────────────────────────────────────────────────────── */
+
+.ocard-swap {
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px; display: grid; place-items: center;
+  background: rgba(239,238,234,.92);
+  border: 1px solid var(--line); border-radius: 50%;
+  color: var(--ink-2);
+  opacity: 0;
+  transition: opacity .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+}
+.ocard-item:hover .ocard-swap, .ocard-swap:focus-visible { opacity: 1; }
+.ocard-swap:hover { color: var(--accent); border-color: var(--accent); }
+.ocard-swap:disabled { opacity: .45; cursor: not-allowed; }
+/* No hover on touch screens: keep the control visible. */
+@media (hover: none) { .ocard-swap { opacity: 1; } }
+
+.ocard-thumb img { animation: fade .4s var(--ease); }
+
+/* ── "Not for me" ────────────────────────────────────────────────────── */
+
+.ocard-actions { display: flex; align-items: center; gap: 14px; }
+.ocard-pass {
+  font-size: 11.5px; color: var(--ink-3);
+  border-bottom: 1px solid transparent;
+  transition: color .25s var(--ease), border-color .25s var(--ease);
+}
+.ocard-pass:hover { color: var(--ink); border-color: var(--ink-3); }
+
+.ocard-feedback { animation: fade .3s var(--ease); }
+.ocard-reasons { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+.ocard-reason {
+  padding: 7px 13px;
+  border: 1px solid var(--line-2); border-radius: 100px;
+  font-size: 12px; color: var(--ink-2);
+  transition: all .25s var(--ease);
+}
+.ocard-reason:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+.ocard-note {
+  margin: 0; padding: 10px 13px;
+  background: var(--rose-tint); border-radius: 6px;
+  font-size: 12.5px; color: var(--ink-2);
+}
+
+@media (max-width: 560px) {
+  .ocard-foot { flex-wrap: wrap; }
 }

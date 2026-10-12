@@ -1,4 +1,4 @@
-import type { Outfit, StyleIntent } from '@/types'
+import type { Outfit, StyleIntent, StyleProfile, Weather } from '@/types'
 import { styleRequest } from '@/lib/stylist'
 
 /**
@@ -17,6 +17,10 @@ export interface StylistRequest {
   history?: { role: 'user' | 'assistant'; content: string }[]
   /** How many looks to return. */
   count?: number
+  /** What is known about the shopper; shapes sizing and preferences. */
+  profile?: StyleProfile
+  /** Local conditions, present only when the shopper opted in. */
+  weather?: Weather
   signal?: AbortSignal
 }
 
@@ -55,9 +59,9 @@ export class LocalStylistProvider implements StylistProvider {
   readonly name = 'local-engine'
   readonly ready = true
 
-  async style({ query, count = 4, signal }: StylistRequest): Promise<StylistResponse> {
+  async style({ query, count = 4, profile, weather, signal }: StylistRequest): Promise<StylistResponse> {
     await wait(signal)
-    const { intent, outfits, reply } = styleRequest(query, count)
+    const { intent, outfits, reply } = styleRequest(query, count, profile, weather)
     return { reply, outfits, intent }
   }
 }
@@ -78,14 +82,14 @@ export class RemoteStylistProvider implements StylistProvider {
 
   get ready() { return Boolean(this.endpoint) }
 
-  async style({ query, history, count = 4, signal }: StylistRequest): Promise<StylistResponse> {
+  async style({ query, history, count = 4, profile, weather, signal }: StylistRequest): Promise<StylistResponse> {
     const res = await fetch(this.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...(this.apiKey ? { 'x-api-key': this.apiKey } : {}),
       },
-      body: JSON.stringify({ query, history, count }),
+      body: JSON.stringify({ query, history, count, profile, weather }),
       signal,
     })
     if (!res.ok) throw new Error(`Stylist API ${res.status}: ${await res.text()}`)
