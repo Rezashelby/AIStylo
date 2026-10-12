@@ -262,9 +262,12 @@ export function styleRequest(
   // temperature rather than the calendar.
   const season = intent.season ?? (weather ? seasonFor(weather) : currentSeason())
   if (weather?.wet) intent.keywords.push('wool', 'leather', 'boot', 'trench', 'coat')
+  // Score each garment once, then sort — not twice per comparison.
   const pool = catalog
     .filter((p) => !excluded(p, profile))
-    .sort((a, b) => relevance(b, intent, season, profile) - relevance(a, intent, season, profile))
+    .map((p) => ({ p, s: relevance(p, intent, season, profile) }))
+    .sort((a, b) => b.s - a.s)
+    .map((x) => x.p)
 
   const outfits: Outfit[] = []
   const used = new Set<string>()

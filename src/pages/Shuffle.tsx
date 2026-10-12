@@ -135,7 +135,12 @@ export default function Shuffle() {
               </button>
             </div>
           )}
-          {current && <p className="sh-hint muted">Drag the card, or use ← and → keys</p>}
+          {current && (
+            <p className="sh-hint muted">
+              <span className="touch">Swipe right to love, left to pass</span>
+              <span className="keys">Drag the card, or use ← and → keys</span>
+            </p>
+          )}
         </section>
 
         <aside className="sh-read">

@@ -62,16 +62,16 @@ export default function Orders() {
             <tbody>
               {rows.map((o) => (
                 <tr key={o.id}>
-                  <td><strong>{o.id}</strong></td>
-                  <td>
+                  <td data-label=""><strong>{o.id}</strong></td>
+                  <td data-label="Customer">
                     <div>{o.customer}</div>
                     <div style={{ fontSize: 11, color: 'var(--a-ink3)' }}>{o.email}</div>
                   </td>
-                  <td>{shortDate(o.placedAt)}</td>
-                  <td className="num">{o.items.reduce((a, i) => a + i.qty, 0)}</td>
-                  <td><span className={`pill ${o.status}`}>{o.status}</span></td>
-                  <td className="num">{money(o.total)}</td>
-                  <td className="num">
+                  <td data-label="Date">{shortDate(o.placedAt)}</td>
+                  <td className="num" data-label="Items">{o.items.reduce((a, i) => a + i.qty, 0)}</td>
+                  <td data-label="Status"><span className={`pill ${o.status}`}>{o.status}</span></td>
+                  <td className="num" data-label="Total">{money(o.total)}</td>
+                  <td className="num" data-label="">
                     <button className="abtn ghost" onClick={() => setOpen(o)}>View</button>
                   </td>
                 </tr>

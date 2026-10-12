@@ -10,7 +10,7 @@
   color: var(--paper);
   border-radius: 100px;
   box-shadow: var(--shadow-lg);
-  font-size: 13px;
+  font-size: 0.8125rem;
   animation: toast-in .4s var(--ease);
 }
 .bag-toast svg { color: var(--accent-soft); flex-shrink: 0; }
@@ -19,7 +19,7 @@
   flex-shrink: 0;
   padding: 6px 12px; border-radius: 100px;
   background: var(--paper); color: var(--ink);
-  font-size: 12px; font-weight: 500;
+  font-size: 0.75rem; font-weight: 500;
   transition: background .25s var(--ease);
 }
 .bag-toast a:hover { background: var(--paper-3); }

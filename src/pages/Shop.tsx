@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ProductCard from '@/components/ProductCard'
 import { brands, catalog } from '@/data/catalog'
@@ -29,6 +29,13 @@ export default function Shop() {
   const [maxPrice, setMaxPrice] = useState(1000)
   // Small screens only: filters stay folded until asked for.
   const [showFilters, setShowFilters] = useState(false)
+  // The phone sheet closes on Escape like any dialog.
+  useEffect(() => {
+    if (!showFilters) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowFilters(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [showFilters])
 
   const set = (k: string, v: string) => {
     const next = new URLSearchParams(params)
@@ -87,7 +94,12 @@ export default function Shop() {
         <span aria-hidden>{showFilters ? '−' : '+'}</span>
       </button>
 
+      {showFilters && <div className="sheet-backdrop" onClick={() => setShowFilters(false)} aria-hidden />}
       <div id="shop-bar" className={`shop-bar ${showFilters ? 'open' : ''}`}>
+        <div className="sheet-head">
+          <strong>Filter &amp; sort</strong>
+          <button onClick={() => setShowFilters(false)} aria-label="Close filters">×</button>
+        </div>
         <div className="shop-filters">
           <label className="ctl">
             <span>Occasion</span>
@@ -127,6 +139,9 @@ export default function Shop() {
             </select>
           </label>
         </div>
+        <button className="sheet-done" onClick={() => setShowFilters(false)}>
+          Show {items.length} {items.length === 1 ? 'piece' : 'pieces'}
+        </button>
       </div>
 
       <p className="shop-count muted">{items.length} {items.length === 1 ? 'piece' : 'pieces'}</p>

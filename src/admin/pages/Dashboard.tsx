@@ -76,11 +76,11 @@ export default function Dashboard() {
               <tbody>
                 {orders.slice(0, 6).map((o) => (
                   <tr key={o.id}>
-                    <td><strong>{o.id}</strong></td>
-                    <td>{o.customer}</td>
-                    <td className="muted">{shortDate(o.placedAt)}</td>
-                    <td><span className={`pill ${o.status}`}>{o.status}</span></td>
-                    <td className="num">{money(o.total)}</td>
+                    <td data-label=""><strong>{o.id}</strong></td>
+                    <td data-label="Customer">{o.customer}</td>
+                    <td className="muted" data-label="Date">{shortDate(o.placedAt)}</td>
+                    <td data-label="Status"><span className={`pill ${o.status}`}>{o.status}</span></td>
+                    <td className="num" data-label="Total">{money(o.total)}</td>
                   </tr>
                 ))}
               </tbody>

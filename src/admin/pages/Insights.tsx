@@ -93,12 +93,12 @@ export default function Insights() {
               <tbody>
                 {topQueries.map((q) => (
                   <tr key={q.query}>
-                    <td>
+                    <td data-label="">
                       {q.query}
                       {q.avgMatch < 60 && <span className="pill refunded" style={{ marginLeft: 8 }}>gap</span>}
                     </td>
-                    <td className="num">{q.count}</td>
-                    <td>
+                    <td className="num" data-label="Volume">{q.count}</td>
+                    <td data-label="Match quality">
                       <div className="stock-cell">
                         <div className={`meter ${q.avgMatch >= 80 ? 'good' : q.avgMatch >= 60 ? 'warn' : 'bad'}`}>
                           <i style={{ width: `${q.avgMatch}%` }} />
@@ -106,7 +106,7 @@ export default function Insights() {
                         <span>{q.avgMatch}%</span>
                       </div>
                     </td>
-                    <td className="num">{(q.ctr * 100).toFixed(0)}%</td>
+                    <td className="num" data-label="Click-through">{(q.ctr * 100).toFixed(0)}%</td>
                   </tr>
                 ))}
               </tbody>

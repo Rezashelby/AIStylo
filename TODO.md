@@ -42,69 +42,63 @@ Effort: **S** under a day · **M** a few days · **L** a week or more.
 
 ## 3. Fully responsive
 
-Mobile layouts exist and the worst bugs are fixed (lost side gutters, look
-cards overflowing, filters filling the first screen). What is missing is a
-system: the CSS uses 12 different ad-hoc breakpoints (520, 560, 760, 780,
-820, 860, 900, 940, 1040, 1080…), so pages change layout at different
-widths, and tablets and very large screens were never designed for.
+Checked by `npm run screens` (every page at every width below, fails on
+sideways scroll or a hero below the fold, warns on small tap targets) and
+`npm run vitals` (Core Web Vitals on a throttled phone).
 
-### Foundation — S each
-- [ ] **One breakpoint scale**, shared by every stylesheet:
-  `480` small phone · `760` phone/tablet · `1040` tablet/laptop ·
-  `1440` large. Replace the 12 ad-hoc values with these.
-- [ ] **Fluid type and spacing** with `clamp()` everywhere, not just the hero,
-  so sizes scale smoothly between breakpoints instead of jumping.
-- [ ] **Container queries** for components that appear in different widths
-  — outfit cards, product cards, the look rail — so a card lays itself out by
-  the space it gets, not by the window size.
-- [ ] **Touch targets at least 44×44px** on touch screens: the swap button
-  on look items (26px), heart buttons (32–34px), size buttons, chips.
-- [ ] **Safe areas** on every fixed or sticky bar (notch, home indicator):
-  done for the tab bar, sticky buy bar and toast; check the rest.
-- [ ] **`dvh` instead of `vh`** for full-height layouts (stylist, sign-in),
-  so the mobile browser toolbar does not hide the composer or buttons.
+### Foundation
+- [x] **One breakpoint scale** — `480` · `760` · `1040` · `min 1440`; the 12
+  ad-hoc values are gone. Documented at the top of `.wrap` in `global.css`.
+- [x] **Fluid type** — `--fs-h2/h3/h4` clamp tokens for every fixed heading;
+  page titles already used `clamp()`.
+- [x] **Container queries** — outfit cards lay out by their own width
+  (`container: ocard`), with snap-scrolling look rails when narrow.
+- [x] **Touch targets ≥ 44px** on touch screens, everywhere — zero warnings
+  across 15 pages × 6 touch sizes. Small icons keep their look and grow an
+  invisible hit area; text links get padding with a matching negative margin.
+- [x] **Safe areas** — `viewport-fit=cover`; gutters, header, tab bar, sticky
+  bars, sheets and toast all respect the notch and home indicator.
+- [x] **`dvh`** for full-height layouts (app shell, stylist, sign-in, admin),
+  plus `interactive-widget=resizes-content` so the keyboard resizes the page.
 
-### Page by page — S–M each
-- [ ] **Home:** hero fits the first screen from 360px to 2560px; the
-  example look stays readable at tablet width.
-- [ ] **Shop:** 2 columns on phone, 3 on tablet, 4 on laptop, 5 on large
-  screens; filters as a bottom sheet on phones instead of an inline panel.
-- [ ] **Product:** image gallery swipeable on phones; sticky buy bar (done);
-  "Finish the look" as a horizontal scroller on small screens.
-- [ ] **Stylist:** composer pinned above the keyboard on phones; look items
-  swipeable; profile questions compact on small screens.
-- [ ] **Lookbook and Saved:** tabs scroll sideways on phones instead of
-  wrapping onto two rows.
-- [ ] **Cart and checkout:** single column on phones with the order summary
-  collapsible at the top; numeric keyboards for postcode and card fields.
-- [ ] **Profile:** measurement fields two per row on phones; option cards
-  (fit) two per row instead of four squeezed.
-- [ ] **Style Shuffle:** card fills the phone screen; swipe is the primary
-  control, with buttons as backup.
-- [ ] **Sign-in:** show a short version of the benefits panel on phones
-  (it is hidden entirely today).
-- [ ] **Admin:** tables become stacked cards on phones rather than only
-  scrolling sideways; order drawer full-screen on phones.
-- [ ] **Large screens (1440px+):** cap line lengths, widen grids rather than
-  stretching content, larger product imagery.
-- [ ] **Landscape phones and foldables:** tab bar and sticky bars must not
-  eat half of a short screen.
+### Page by page
+- [x] **Home** — hero and request box in the first screen from 360px to 2560px.
+- [x] **Shop** — 2 / 3 / 4 / 5 columns; filters as a bottom sheet on phones
+  ("Show 29 pieces" closes it; Escape and the backdrop too).
+- [x] **Product** — sticky buy bar; "Finish the look" swipes on phones;
+  image beside the details on landscape phones.
+- [ ] **Product gallery swipe** — waits for real photos (one image today).
+- [x] **Stylist** — the whole composer dock pinned above the tab bar and
+  keyboard; look items snap-scroll.
+- [x] **Lookbook and Saved** — tabs scroll sideways on phones.
+- [x] **Cart and checkout** — single column on phones; checkout summary folded
+  at the top; `tel` / `email` keyboards. (Postcodes stay a text keyboard — UK
+  and Canadian postcodes contain letters.)
+- [x] **Profile** — measurement fields and fit options two per row on phones.
+- [x] **Style Shuffle** — the card is the phone screen; "Swipe right to love"
+  on touch, arrow keys on desktop.
+- [x] **Sign-in** — one-line benefits note on phones.
+- [x] **Admin** — tables become stacked, labelled cards on phones; the order
+  drawer goes full-screen.
+- [x] **Large screens** — page widens to 1440px at 1440+; shop gets 5 columns.
+- [x] **Landscape phones** — header scrolls away, tab bar drops its labels.
 
-### Images — S once real photos exist
-- [ ] **Responsive images:** `srcset`/`sizes` (or the image CDN's resizing)
-  so phones download phone-sized images; `loading="lazy"` below the fold
-  and explicit dimensions to stop layout shift.
+### Images — once real photos exist
+- [ ] **Responsive images:** `srcset`/`sizes` (or the image CDN's resizing),
+  `loading="lazy"` below the fold, explicit dimensions. Today's images are
+  generated inline SVG, so there is nothing to resize yet.
 
-### Prove it — S
-- [ ] **Test matrix:** 360, 390, 430 (phones), 768, 1024 (tablets, both
-  orientations), 1280, 1440, 1920, 2560; Safari iOS, Chrome Android,
-  Chrome, Firefox and Safari on desktop.
-- [ ] **Automated screenshots** of every page at those widths on each change
-  (Playwright), so layout regressions are caught before they ship.
-- [ ] **Core Web Vitals on mobile:** LCP < 2.5s, CLS < 0.1, INP < 200ms on a
-  mid-range phone over 4G.
-- [ ] **Zoom and text size:** layouts survive 200% browser zoom and large
-  system font sizes without clipping or horizontal scroll.
+### Prove it
+- [x] **Test matrix, automated** — 360, 390, 430, 667×375, 768, 1024, 640
+  (= 1280 at 200% zoom), 1280, 1440, 1920, 2560, in Chrome: `npm run screens`.
+- [ ] **Real devices** — Safari on iPhone, Chrome on Android, Firefox and
+  Safari on desktop. The script runs Chrome only.
+- [x] **Core Web Vitals on mobile** — all five main pages "good" on a
+  throttled phone (`npm run vitals`). Thin margins to watch: home LCP
+  ~2.35s (target 2.5s), product INP ~190ms (target 200ms).
+- [x] **200% browser zoom** — covered by the 640px run, no sideways scroll.
+- [x] **Large default font size** — all text sizes are `rem`, so they follow
+  the shopper's browser setting; `npm run screens -- --text=150` passes.
 
 ## 4. Standard store features
 
@@ -195,7 +189,68 @@ Each step: a plain-language headline, a timing in ms, and an expandable
 - [ ] **Plain-language copy** throughout; technical detail lives behind
   "show details", so a customer and an engineer can both follow it.
 
-## 6. Differentiators
+## 6. Brand admin panel (brand partner portal)
+
+Today `/admin` is one store-wide panel. AIStylo sells several brands
+(Maison Verre, Atelier Nord, Studio Lin, Côte Atelier), and each needs its
+own login that manages **its own** products and sees **its own** results —
+never another brand's. The store team keeps the full panel above all of it.
+
+### Access and roles — M · **Backend**
+- [ ] **Two kinds of admin:** *platform* (the AIStylo team: owner, manager,
+  staff — the roles already in `admin_users`) and *brand* (brand owner,
+  brand editor, brand viewer), each brand user tied to one `brands.id`.
+- [ ] **Enforced in the database, not just the UI:** Postgres row-level
+  security on products, variants, media, order items and analytics, keyed
+  on the signed-in user's brand, so a bug in a page can never show another
+  brand's data. Covered by tests that try to cross brands.
+- [ ] **Invites:** the platform team invites a brand; the brand owner invites
+  their own team. Passwordless sign-in like customers, plus required
+  two-factor (passkey or authenticator app) for every admin.
+- [ ] **Audit log:** who changed which product, price or stock, and when —
+  visible to the brand and the platform team.
+
+### What a brand can do — L · **Backend**
+- [ ] **Dashboard:** revenue, units, returns, best sellers, low stock — their
+  brand only, with date ranges and comparison to the previous period.
+- [ ] **Products:** create and edit (name, description, material, colour,
+  sizes and stock per size, price), upload photos, set occasion, season and
+  dress code. Every save re-embeds the product so the stylist sees it
+  immediately.
+- [ ] **Approval flow:** new products and big edits go to the platform team
+  for review before going live (status: draft → in review → live), so the
+  catalogue stays consistent and the stylist's tags stay accurate.
+- [ ] **Bulk tools:** CSV import/export for products and stock; bulk price
+  and status changes.
+- [ ] **Orders and fulfilment:** the order lines for their products (never
+  the shopper's full order or other brands' items), mark shipped with
+  tracking, handle returns. Customer contact details only as far as
+  fulfilment needs.
+- [ ] **Stylist insights for their brand:** how often their pieces appear in
+  looks, look-to-bag rate, the requests their products match well, and
+  the *catalogue-gap* report: what shoppers ask for that the brand could
+  make ("linen trousers under $200 — 340 requests, weak matches").
+- [ ] **Payouts and statements:** sales, commission and payouts per period,
+  downloadable (Stripe Connect when payments go live).
+- [ ] **Brand page:** logo, story, imagery for a public `/brands/:slug` page
+  on the storefront.
+
+### What the platform team gets on top — M · **Backend**
+- [ ] **Brands list:** onboard, pause or remove a brand; set its commission.
+- [ ] **Review queue** for brand-submitted products and edits.
+- [ ] **Cross-brand view:** everything the current `/admin` shows, filterable
+  by brand.
+- [ ] **Act as a brand** (read-only by default, logged) for support.
+
+### Design — M
+- [ ] Same design system as the storefront, with the brand's name and logo in
+  the header so nobody is ever unsure which brand they are editing.
+- [ ] Fully responsive — brands check sales and mark orders shipped from a
+  phone (stacked tables, already in place for `/admin`).
+- [ ] Until the backend exists, build the brand views on the current mock
+  admin data, filtered by brand, behind a brand switcher in demo mode.
+
+## 7. Differentiators
 
 - [ ] **My closet** — M
   Mark catalogue pieces you already own; the stylist mixes them into looks
@@ -210,7 +265,7 @@ Each step: a plain-language headline, a timing in ms, and an expandable
 - [ ] **Virtual try-on** — L · **Backend**, needs real photos
 - [ ] **Human stylist hand-off** — L · **Backend**
 
-## 7. Backend and infrastructure
+## 8. Backend and infrastructure
 
 - [ ] **Auth service** — M · **Backend**
   Implement `POST /code`, `/verify`, `/signout` and set `VITE_AUTH_API`
@@ -220,7 +275,7 @@ Each step: a plain-language headline, a timing in ms, and an expandable
 - [ ] **Stylist API** — L · **Backend**
   Hosted model behind `VITE_STYLIST_API` (`src/lib/ai/provider.ts`).
 
-## 8. Stylist engine and scale
+## 9. Stylist engine and scale
 
 The engine runs in each shopper's browser today (`src/lib/stylist.ts`). That
 costs nothing per request, but ships the whole catalogue to every visitor,
@@ -342,7 +397,7 @@ speed.** No separate vector database and no MongoDB.
 - [ ] **Cost guardrail.** Daily model spend cap; when reached, the engine
   serves deterministic and cached results only.
 
-## 9. Housekeeping
+## 10. Housekeeping
 
 - [ ] **Commit the work so far.** Nothing from the recent sessions is
   committed.

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import OutfitCard from '@/components/OutfitCard'
 import ProductCard from '@/components/ProductCard'
@@ -38,8 +38,11 @@ export default function Lookbook() {
   // Following a Saved link while already on this page.
   useEffect(() => { if (wantsSaved) setActive(SAVED) }, [wantsSaved])
   const [note, setNote] = useState<string | null>(null)
-  const showSaved = active === SAVED
-  const edit = EDITS[showSaved ? 0 : active]
+  // The tab responds at once; the looks for it render a moment later, so a
+  // tap never waits on the engine before the screen updates.
+  const shown = useDeferredValue(active)
+  const showSaved = shown === SAVED
+  const edit = EDITS[showSaved ? 0 : shown]
   // Edits are styled for this shopper too, so ratings and feedback show here.
   const looks = useMemo(
     () => styleRequest(edit.query, 4, profile).outfits,
@@ -69,9 +72,9 @@ export default function Lookbook() {
           </button>
         ))}
         <button
-          className={`lb-tab ${showSaved ? 'active' : ''}`}
+          className={`lb-tab ${active === SAVED ? 'active' : ''}`}
           onClick={() => { setActive(SAVED); setNote(null) }}
-          aria-current={showSaved}
+          aria-current={active === SAVED}
         >
           Saved{savedCount ? ` (${savedCount})` : ''}
         </button>

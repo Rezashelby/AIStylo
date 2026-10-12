@@ -89,6 +89,8 @@ export default function SignIn() {
             <form onSubmit={(e) => { e.preventDefault(); sendCode() }} noValidate>
               <h1>Sign in or create an account</h1>
               <p className="signin-lede">Enter your email. If you're new, we'll set you up.</p>
+              {/* Phones hide the side panel; keep its point in one line. */}
+              <p className="signin-perks">Keeps your sizes, saved looks and bag on every device. No password, ever.</p>
 
               <label className="signin-label" htmlFor="email">Email</label>
               <input

@@ -1,7 +1,7 @@
 .lookbook { padding-block: 52px 96px; }
 
 .lb-head { max-width: 700px; margin-bottom: 38px; }
-.lb-title { font-size: clamp(32px, 4.4vw, 50px); font-weight: 300; margin: 12px 0 16px; }
+.lb-title { font-size: clamp(2rem, 4.4vw, 3.125rem); font-weight: 300; margin: 0.75rem 0 1rem; }
 
 .lb-tabs {
   display: flex; gap: 4px; flex-wrap: wrap;
@@ -9,7 +9,7 @@
 }
 .lb-tab {
   position: relative; padding: 12px 17px;
-  font-family: var(--serif); font-size: 18px; color: var(--ink-3);
+  font-family: var(--serif); font-size: 1.125rem; color: var(--ink-3);
   transition: color .26s var(--ease);
 }
 .lb-tab::after {
@@ -23,11 +23,11 @@
 
 .lb-panel { animation: fade .45s var(--ease); }
 .lb-brief { margin-bottom: 30px; }
-.lb-brief h2 { font-size: clamp(26px, 3.2vw, 36px); font-weight: 300; margin-bottom: 10px; }
+.lb-brief h2 { font-size: clamp(1.625rem, 3.2vw, 2.25rem); font-weight: 300; margin-bottom: 0.625rem; }
 
 .lb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 
-@media (max-width: 900px) { .lb-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .lb-grid { grid-template-columns: minmax(0, 1fr); } }
 
 .lb-empty {
   display: flex; flex-direction: column; align-items: flex-start; gap: 16px;
@@ -39,12 +39,22 @@
 .lb-note {
   margin: -12px 0 24px; padding: 11px 14px;
   background: var(--rose-tint); border-radius: 6px;
-  font-size: 13px; color: var(--ink-2);
+  font-size: 0.8125rem; color: var(--ink-2);
 }
 
 .lb-saved-group + .lb-saved-group { margin-top: 48px; }
-.lb-saved-group h3 { font-size: 26px; margin-bottom: 18px; display: flex; align-items: baseline; gap: 10px; }
-.lb-saved-group h3 span { font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
+.lb-saved-group h3 { font-size: var(--fs-h3); margin-bottom: 1.125rem; display: flex; align-items: baseline; gap: 0.625rem; }
+.lb-saved-group h3 span { font-family: var(--sans); font-size: 0.8125rem; color: var(--ink-3); }
 .lb-pieces { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 26px 22px; }
 @media (max-width: 1040px) { .lb-pieces { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 760px) { .lb-pieces { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; } }
+
+/* Phones: edits scroll sideways in one row instead of wrapping to two. */
+@media (max-width: 760px) {
+  .lb-tabs {
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+    margin-inline: -20px; padding-inline: 8px;
+  }
+  .lb-tabs::-webkit-scrollbar { display: none; }
+  .lb-tab { flex-shrink: 0; }
+}

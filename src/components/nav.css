@@ -1,5 +1,6 @@
 .nav {
   position: sticky; top: 0; z-index: 60;
+  padding-top: env(safe-area-inset-top);
   background: rgba(239,238,234,.72);
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
@@ -20,19 +21,19 @@
 .brand-mark {
   width: 30px; height: 30px; display: grid; place-items: center;
   background: var(--ink); color: var(--paper);
-  font-family: var(--serif); font-size: 18px; line-height: 1;
+  font-family: var(--serif); font-size: 1.125rem; line-height: 1;
   border-radius: 50%;
   transition: background .35s var(--ease);
 }
 .brand:hover .brand-mark { background: var(--accent); }
 .brand-word {
-  font-family: var(--serif); font-size: 23px; letter-spacing: -.01em;
+  font-family: var(--serif); font-size: 1.4375rem; letter-spacing: -.01em;
 }
 
 .nav-links { display: flex; gap: 38px; justify-self: center; }
 .nav-link {
   position: relative;
-  font-size: 14px; color: var(--ink-2); padding: 6px 0;
+  font-size: 0.875rem; color: var(--ink-2); padding: 0.375rem 0;
   transition: color .28s var(--ease);
 }
 .nav-link::after {
@@ -54,7 +55,7 @@
   padding: 10px 18px;
   background: var(--ink); color: var(--paper);
   border-radius: 100px;
-  font-size: 13px; font-weight: 500;
+  font-size: 0.8125rem; font-weight: 500;
   transition: background .32s var(--ease), transform .2s var(--ease);
 }
 .nav-cta:hover { background: var(--accent); }
@@ -77,7 +78,7 @@
   min-width: 16px; height: 16px; padding: 0 4px;
   display: grid; place-items: center;
   background: var(--accent); color: var(--paper);
-  font-size: 9.5px; font-weight: 600; border-radius: 100px;
+  font-size: 0.5938rem; font-weight: 600; border-radius: 6.25rem;
   font-variant-numeric: tabular-nums;
   animation: bump .45s var(--ease);
 }
@@ -86,13 +87,13 @@
 .nav-avatar {
   width: 28px; height: 28px; display: grid; place-items: center;
   border-radius: 50%; background: var(--accent); color: var(--paper);
-  font-size: 12.5px; font-weight: 600;
+  font-size: 0.7812rem; font-weight: 600;
 }
-.nav-avatar.small { width: 22px; height: 22px; font-size: 11px; }
+.nav-avatar.small { width: 1.375rem; height: 1.375rem; font-size: 0.6875rem; }
 
 .nav-signin {
   padding: 8px 12px; border-radius: 100px;
-  font-size: 13.5px; color: var(--ink-2);
+  font-size: 0.8438rem; color: var(--ink-2);
   transition: color .25s var(--ease), background .25s var(--ease);
 }
 .nav-signin:hover, .nav-signin.active { color: var(--ink); background: var(--paper-2); }
@@ -122,7 +123,7 @@
     transition: color .25s var(--ease);
   }
   .tab-icon { display: grid; place-items: center; height: 24px; }
-  .tab-label { font-size: 10.5px; letter-spacing: .02em; }
+  .tab-label { font-size: 0.6562rem; letter-spacing: .02em; }
   .tab.active { color: var(--ink); }
   .tab.active .tab-label { font-weight: 500; }
 
@@ -136,4 +137,25 @@
 
   /* Keep the page, footer included, clear of the bar. */
   .app:has(.tabbar) { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+}
+
+/* ── Short screens (phones in landscape) ─────────────────────────────── */
+/* A 68px header plus a 68px tab bar would eat over a third of a 375px-tall
+   screen. The header scrolls away and the bar drops its labels. */
+@media (max-width: 760px) and (max-height: 480px) {
+  .nav { position: relative; }
+  .tabbar { padding-block: 2px calc(2px + env(safe-area-inset-bottom)); }
+  .tab-label { display: none; }
+  .app:has(.tabbar) { padding-bottom: calc(46px + env(safe-area-inset-bottom)); }
+  .pdp-actions, .composer { bottom: calc(46px + env(safe-area-inset-bottom)) !important; }
+}
+
+/* ── Short screens (phones in landscape) ─────────────────────────────── */
+/* A 68px header plus a 68px tab bar would eat over a third of a 375px-tall
+   screen. The header scrolls away and the bar drops its labels. */
+@media (max-width: 760px) and (max-height: 480px) {
+  .nav { position: relative; }
+  .tabbar { padding-block: 2px calc(2px + env(safe-area-inset-bottom)); }
+  .tab-label { display: none; }
+  .app:has(.tabbar) { padding-bottom: calc(46px + env(safe-area-inset-bottom)); }
 }

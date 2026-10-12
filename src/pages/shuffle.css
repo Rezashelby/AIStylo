@@ -1,7 +1,7 @@
 .shuffle { padding-block: 52px 96px; }
 
 .sh-head { max-width: 680px; margin-bottom: 40px; }
-.sh-title { font-size: clamp(32px, 4.4vw, 50px); font-weight: 300; margin: 12px 0 16px; }
+.sh-title { font-size: clamp(2rem, 4.4vw, 3.125rem); font-weight: 300; margin: 0.75rem 0 1rem; }
 
 .sh-body {
   display: grid; grid-template-columns: minmax(0, 1fr) 300px;
@@ -30,11 +30,11 @@
 .sh-img img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
 .sh-meta { padding: 28px 26px; display: flex; flex-direction: column; gap: 10px; }
-.sh-meta h2 { font-size: 26px; font-weight: 400; }
-.sh-desc { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.sh-meta h2 { font-size: var(--fs-h3); font-weight: 400; }
+.sh-desc { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--ink-2); }
 .sh-facts {
   margin: auto 0 0; display: flex; flex-wrap: wrap; gap: 6px 14px;
-  font-size: 12px; color: var(--ink-3);
+  font-size: 0.75rem; color: var(--ink-3);
 }
 .sh-facts .price { color: var(--ink); }
 
@@ -42,7 +42,7 @@
 .sh-btn {
   display: inline-flex; align-items: center; gap: 9px;
   padding: 13px 26px; border-radius: 100px;
-  font-size: 14px; font-weight: 500;
+  font-size: 0.875rem; font-weight: 500;
   border: 1px solid var(--line-2);
   transition: all .26s var(--ease);
 }
@@ -52,17 +52,17 @@
 .sh-btn.love:hover { background: var(--accent); border-color: var(--accent); }
 .sh-btn:active { transform: translateY(1px); }
 
-.sh-undo { font-size: 12px; color: var(--ink-3); }
+.sh-undo { font-size: 0.75rem; color: var(--ink-3); }
 .sh-undo:hover:not(:disabled) { color: var(--ink); }
 .sh-undo:disabled { opacity: .35; cursor: default; }
 
-.sh-hint { text-align: center; font-size: 11.5px; margin: 12px 0 0; }
+.sh-hint { text-align: center; font-size: 0.7188rem; margin: 0.75rem 0 0; }
 
 .sh-done {
   padding: 56px 36px; text-align: center;
   border: 1px dashed var(--line-2); border-radius: 3px;
 }
-.sh-done h2 { font-size: 30px; font-weight: 300; margin-bottom: 12px; }
+.sh-done h2 { font-size: var(--fs-h2); font-weight: 300; margin-bottom: 0.75rem; }
 .sh-done .lede { margin-inline: auto; }
 .sh-done-actions { display: flex; justify-content: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
 
@@ -74,28 +74,39 @@
   border-left: 2px solid var(--rose); border-radius: 0 6px 6px 0;
 }
 .sh-read-group { margin-top: 16px; }
-.sh-read-group h3 { font-size: 16px; font-weight: 400; margin-bottom: 8px; }
+.sh-read-group h3 { font-size: 1rem; font-weight: 400; margin-bottom: 0.5rem; }
 .sh-read ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .sh-read li {
   padding: 4px 11px; border-radius: 100px;
   background: var(--white); border: 1px solid var(--line);
-  font-size: 12px; color: var(--ink-2); text-transform: capitalize;
+  font-size: 0.75rem; color: var(--ink-2); text-transform: capitalize;
 }
 .sh-read ul.neg li { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--line-2); }
-.sh-read-empty { margin: 12px 0 0; font-size: 13px; line-height: 1.6; color: var(--ink-3); }
-.sh-read-count { margin: 18px 0 0; font-size: 12px; color: var(--ink-3); }
+.sh-read-empty { margin: 0.75rem 0 0; font-size: 0.8125rem; line-height: 1.6; color: var(--ink-3); }
+.sh-read-count { margin: 1.125rem 0 0; font-size: 0.75rem; color: var(--ink-3); }
 .sh-read-count strong { color: var(--ink); font-weight: 500; }
-.sh-reset { margin-top: 12px; font-size: 12px; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; }
+.sh-reset { margin-top: 0.75rem; font-size: 0.75rem; color: var(--ink-3); text-decoration: underline; text-underline-offset: 0.1875rem; }
 .sh-reset:hover { color: var(--accent); }
 
-@media (max-width: 900px) {
+@media (max-width: 760px) {
   .sh-body { grid-template-columns: 1fr; gap: 36px; }
   .sh-read { position: static; }
 }
-@media (max-width: 560px) {
+@media (max-width: 480px) {
+  /* The card is the screen: short header, tall image, buttons in reach. */
+  .shuffle { padding-top: 24px; }
+  .sh-head { margin-bottom: 18px; }
+  .sh-head .lede { display: none; }
   .sh-card { grid-template-columns: 1fr; }
-  .sh-img { aspect-ratio: 4 / 3; }
-  .sh-meta { padding: 20px; }
+  .sh-img { aspect-ratio: 1 / 1; }
+  .sh-meta { padding: 16px 18px 18px; gap: 6px; }
   .sh-desc { display: none; }
+  .sh-deck { min-height: 0; }
   .sh-btn { padding: 12px 20px; }
+}
+/* Touch screens swipe; keyboards use arrows. Say the right one. */
+.sh-hint .touch { display: none; }
+@media (pointer: coarse) {
+  .sh-hint .touch { display: inline; }
+  .sh-hint .keys { display: none; }
 }

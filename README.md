@@ -40,7 +40,15 @@ the full schema with pgvector, HNSW indexes and trigram search.
 ```bash
 npm run build          # production bundle
 npm run lint           # typecheck
+npm run screens        # every page at 11 screen sizes: screenshots + layout checks
+npm run vitals         # Core Web Vitals on a throttled mid-range phone
 ```
+
+`screens` fails if any page scrolls sideways or the home request box falls
+below the fold, and lists tap targets under 44px on touch screens; add
+`--widths=390,1280` for a subset or `--text=150` for a 150% default font.
+Both scripts use the system Chrome via `playwright-core` (no browser
+download) and expect a fresh `npm run build`.
 
 ## What's here
 

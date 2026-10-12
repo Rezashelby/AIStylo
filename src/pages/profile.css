@@ -4,23 +4,23 @@
   display: flex; align-items: flex-start; justify-content: space-between;
   gap: 30px; margin-bottom: 44px;
 }
-.profile-title { font-size: clamp(30px, 4vw, 44px); font-weight: 300; margin: 12px 0 16px; }
+.profile-title { font-size: clamp(1.875rem, 4vw, 2.75rem); font-weight: 300; margin: 0.75rem 0 1rem; }
 
 .profile-meter { position: relative; display: grid; place-items: center; flex-shrink: 0; }
 .profile-meter span {
-  position: absolute; font-size: 13px; font-weight: 500;
+  position: absolute; font-size: 0.8125rem; font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
 .profile-section { padding: 28px 0; border-top: 1px solid var(--line); }
-.profile-section h2 { font-size: 21px; font-weight: 400; margin-bottom: 6px; }
-.section-note { margin: 0 0 16px; font-size: 13px; color: var(--ink-3); line-height: 1.6; max-width: 60ch; }
+.profile-section h2 { font-size: var(--fs-h4); font-weight: 400; margin-bottom: 0.375rem; }
+.section-note { margin: 0 0 1rem; font-size: 0.8125rem; color: var(--ink-3); line-height: 1.6; max-width: 60ch; }
 
 /* ── Segmented control ───────────────────────────────────────────────── */
 
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
 .seg-btn {
-  padding: 10px 18px; font-size: 12.5px; color: var(--ink-2);
+  padding: 0.625rem 1.125rem; font-size: 0.7812rem; color: var(--ink-2);
   background: var(--white); transition: all .25s var(--ease);
 }
 .seg-btn + .seg-btn { border-left: 1px solid var(--line); }
@@ -38,20 +38,20 @@
 }
 .opt:hover { border-color: var(--line-2); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
 .opt.active { border-color: var(--accent); background: var(--paper-2); }
-.opt strong { font-size: 13.5px; font-weight: 500; }
-.opt span { font-size: 11.5px; color: var(--ink-3); }
+.opt strong { font-size: 0.8438rem; font-weight: 500; }
+.opt span { font-size: 0.7188rem; color: var(--ink-3); }
 
 /* ── Number fields ───────────────────────────────────────────────────── */
 
 .field-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 
 .nfield { display: flex; flex-direction: column; gap: 6px; }
-.nfield > span { font-size: 10.5px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); }
+.nfield > span { font-size: 0.6562rem; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); }
 .nfield-input { position: relative; }
 .nfield-input .field { width: 100%; padding-right: 42px; }
 .nfield-input i {
   position: absolute; right: 13px; top: 50%; transform: translateY(-50%);
-  font-style: normal; font-size: 12px; color: var(--ink-3); pointer-events: none;
+  font-style: normal; font-size: 0.75rem; color: var(--ink-3); pointer-events: none;
 }
 .nfield-input input::-webkit-outer-spin-button,
 .nfield-input input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -64,14 +64,14 @@
   background: var(--paper-2); border-left: 2px solid var(--accent); border-radius: 0 2px 2px 0;
 }
 .size-preview ul { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
-.size-preview li { display: flex; align-items: baseline; gap: 11px; flex-wrap: wrap; font-size: 12.5px; }
+.size-preview li { display: flex; align-items: baseline; gap: 0.6875rem; flex-wrap: wrap; font-size: 0.7812rem; }
 .size-slot { min-width: 62px; color: var(--ink-3); }
-.size-preview strong { font-size: 16px; font-weight: 500; min-width: 32px; }
-.size-conf { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
+.size-preview strong { font-size: 1rem; font-weight: 500; min-width: 2rem; }
+.size-conf { font-size: 0.6562rem; letter-spacing: .1em; text-transform: uppercase; }
 .size-conf.high { color: var(--sage); }
 .size-conf.medium { color: #B8842F; }
 .size-conf.low { color: var(--ink-3); }
-.size-basis { color: var(--ink-3); font-size: 11.5px; }
+.size-basis { color: var(--ink-3); font-size: 0.7188rem; }
 
 /* ── Chips ───────────────────────────────────────────────────────────── */
 
@@ -92,20 +92,20 @@
   padding-top: 30px; border-top: 1px solid var(--line);
 }
 
-@media (max-width: 780px) {
+@media (max-width: 760px) {
   .opt-grid { grid-template-columns: repeat(2, 1fr); }
   .field-grid { grid-template-columns: repeat(2, 1fr); }
   .two-up { grid-template-columns: 1fr; gap: 20px; }
 }
-@media (max-width: 520px) {
+@media (max-width: 480px) {
+  /* Two per row stays readable on phones and halves the scrolling. */
   .profile-head { flex-direction: column-reverse; align-items: flex-start; gap: 18px; }
-  .field-grid { grid-template-columns: 1fr; }
-  .opt-grid { grid-template-columns: 1fr; }
+  .opt { padding: 12px; }
 }
 
 /* ── Taste ───────────────────────────────────────────────────────────── */
 
-.taste-line { margin: 0 0 10px; font-size: 14px; color: var(--ink-2); }
+.taste-line { margin: 0 0 0.625rem; font-size: 0.875rem; color: var(--ink-2); }
 .taste-actions { display: flex; align-items: center; gap: 18px; margin-top: 16px; }
 
 /* ── Account ─────────────────────────────────────────────────────────── */
@@ -122,9 +122,9 @@
   border-radius: 50%; background: var(--accent); color: var(--paper);
   font-weight: 600;
 }
-.account-email { margin: 0; font-size: 15px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
-.account-note { margin: 2px 0 0; font-size: 13px; color: var(--ink-3); }
-@media (max-width: 560px) {
+.account-email { margin: 0; font-size: 0.9375rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.account-note { margin: 0.125rem 0 0; font-size: 0.8125rem; color: var(--ink-3); }
+@media (max-width: 480px) {
   .account-bar.guest { flex-direction: column; align-items: flex-start; }
 }
 
@@ -146,5 +146,5 @@
 .order-row-thumbs img + img { margin-left: -10px; }
 .order-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .order-row-text strong { font-weight: 500; letter-spacing: .02em; }
-.order-row-text span { font-size: 12.5px; color: var(--ink-3); }
+.order-row-text span { font-size: 0.7812rem; color: var(--ink-3); }
 .order-row-total { font-weight: 500; font-variant-numeric: tabular-nums; }

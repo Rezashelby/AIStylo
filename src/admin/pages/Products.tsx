@@ -88,11 +88,13 @@ export default function Products() {
             <thead>
               <tr>
                 <th style={{ width: 34 }}>
-                  <input type="checkbox" checked={allChecked} onChange={toggleAll} aria-label="Select all" />
+                  <label className="hit">
+                    <input type="checkbox" checked={allChecked} onChange={toggleAll} aria-label="Select all" />
+                  </label>
                 </th>
                 <th>Product</th>
                 <th>Category</th>
-                <th>Register</th>
+                <th>Dress code</th>
                 <th>Stock</th>
                 <th className="num">Sold 30d</th>
                 <th className="num">Price</th>
@@ -102,14 +104,16 @@ export default function Products() {
             <tbody>
               {rows.map((s) => (
                 <tr key={s.product.id}>
-                  <td>
-                    <input
-                      type="checkbox" checked={selected.includes(s.product.id)}
-                      onChange={() => toggle(s.product.id)}
-                      aria-label={`Select ${s.product.name}`}
-                    />
+                  <td data-label="" className="cell-select">
+                    <label className="hit">
+                      <input
+                        type="checkbox" checked={selected.includes(s.product.id)}
+                        onChange={() => toggle(s.product.id)}
+                        aria-label={`Select ${s.product.name}`}
+                      />
+                    </label>
                   </td>
-                  <td>
+                  <td data-label="">
                     <div className="cell-product">
                       <img src={s.product.image} alt="" />
                       <div>
@@ -118,9 +122,9 @@ export default function Products() {
                       </div>
                     </div>
                   </td>
-                  <td style={{ textTransform: 'capitalize' }}>{s.product.slot}</td>
-                  <td>{'●'.repeat(s.product.formality)}<span style={{ color: 'var(--a-line)' }}>{'●'.repeat(5 - s.product.formality)}</span></td>
-                  <td>
+                  <td style={{ textTransform: 'capitalize' }} data-label="Category">{s.product.slot}</td>
+                  <td data-label="Dress code">{'●'.repeat(s.product.formality)}<span style={{ color: 'var(--a-line)' }}>{'●'.repeat(5 - s.product.formality)}</span></td>
+                  <td data-label="Stock">
                     <div className="stock-cell">
                       <div className={`meter ${s.stock > 15 ? 'good' : s.stock > 5 ? 'warn' : 'bad'}`}>
                         <i style={{ width: `${Math.min(100, (s.stock / 46) * 100)}%` }} />
@@ -128,9 +132,9 @@ export default function Products() {
                       <span>{s.stock}</span>
                     </div>
                   </td>
-                  <td className="num">{s.sold30d}</td>
-                  <td className="num">{money(s.product.price)}</td>
-                  <td>
+                  <td className="num" data-label="Sold 30d">{s.sold30d}</td>
+                  <td className="num" data-label="Price">{money(s.product.price)}</td>
+                  <td data-label="Status">
                     <span className={`pill ${s.stock === 0 ? 'draft' : 'live'}`}>
                       {s.stock === 0 ? 'Sold out' : 'Live'}
                     </span>

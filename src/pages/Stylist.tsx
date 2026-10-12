@@ -246,6 +246,9 @@ export default function Stylist() {
           )}
         </div>
 
+        {/* One unit at the bottom: on phones the whole dock is pinned, so
+            nothing in it shifts when new looks arrive above. */}
+        <div className="composer-dock">
         <div className="context-row">
           <button
             type="button"
@@ -283,6 +286,7 @@ export default function Stylist() {
           Styled from {stylist.name === 'local-engine' ? 'the on-device engine' : 'the live stylist service'} ·
           {' '}All pieces shown are in the catalogue
         </p>
+        </div>
       </div>
     </div>
   )

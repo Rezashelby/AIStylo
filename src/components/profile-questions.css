@@ -11,7 +11,7 @@
 
 .pq-head { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .pq-head svg { color: var(--accent); flex-shrink: 0; }
-.pq-head p { margin: 0; font-size: 13px; color: var(--ink-2); }
+.pq-head p { margin: 0; font-size: 0.8125rem; color: var(--ink-2); }
 
 .pq-row { padding: 13px 0; border-top: 1px solid var(--line); }
 .pq-row:first-of-type { border-top: none; padding-top: 0; }
@@ -19,10 +19,10 @@
 .pq-q { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .pq-question {
   margin: 0 0 10px;
-  font-family: var(--serif); font-size: 19px; font-weight: 400; line-height: 1.35;
+  font-family: var(--serif); font-size: 1.1875rem; font-weight: 400; line-height: 1.35;
 }
 .pq-why {
-  font-size: 11px; color: var(--ink-3); flex-shrink: 0;
+  font-size: 0.6875rem; color: var(--ink-3); flex-shrink: 0;
   text-decoration: underline; text-underline-offset: 3px;
   transition: color .22s var(--ease);
 }
@@ -33,7 +33,7 @@
   padding: 9px 12px;
   background: var(--paper-2);
   border-radius: 2px;
-  font-size: 12.5px; line-height: 1.55; color: var(--ink-2);
+  font-size: 0.7812rem; line-height: 1.55; color: var(--ink-2);
   animation: fade .25s var(--ease);
 }
 
@@ -48,15 +48,15 @@
   border-color: var(--accent); background: var(--white);
   transform: translateY(-1px); box-shadow: var(--shadow-sm);
 }
-.pq-option strong { font-size: 13px; font-weight: 500; }
-.pq-option span { font-size: 11.5px; color: var(--ink-3); }
+.pq-option strong { font-size: 0.8125rem; font-weight: 500; }
+.pq-option span { font-size: 0.7188rem; color: var(--ink-3); }
 
 .pq-number { display: flex; gap: 8px; align-items: stretch; }
 .pq-input { position: relative; flex: 1; max-width: 190px; }
 .pq-input .field { padding-right: 44px; width: 100%; }
 .pq-unit {
   position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  font-size: 12px; color: var(--ink-3); pointer-events: none;
+  font-size: 0.75rem; color: var(--ink-3); pointer-events: none;
 }
 /* The spinner arrows add nothing here and crowd the unit label. */
 .pq-input input::-webkit-outer-spin-button,
@@ -65,11 +65,11 @@
 
 .pq-skip {
   margin-top: 10px;
-  font-size: 11.5px; color: var(--ink-3);
+  font-size: 0.7188rem; color: var(--ink-3);
   transition: color .22s var(--ease);
 }
 .pq-skip:hover { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; }
 
-@media (max-width: 560px) {
+@media (max-width: 480px) {
   .pq-options { grid-template-columns: 1fr; }
 }
